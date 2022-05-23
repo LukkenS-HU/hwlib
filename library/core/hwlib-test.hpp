@@ -66,12 +66,12 @@ void test_end(){
       hwlib::cout 
 	     << "\nTest success: " 
 		 << hwlib::dec << _equal_calls_count
-		 << " test were successfull\n";
+		 << " test were successful\n";
    } else {	   
       hwlib::cout 
 	     << "\nTEST FAILURE: " 
 		 << hwlib::dec << _equal_failures_count
-		 << " test were NOT successfull\n";
+		 << " test were NOT successful\n";
    }	  
 }
 
