@@ -15,7 +15,6 @@
 // ==========================================================================
 
 #include "hwlib.hpp"
-#include <iostream>
 
 int main(){
    hwlib::cout << "'empty' main test\n";

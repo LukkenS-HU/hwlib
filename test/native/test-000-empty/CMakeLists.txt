@@ -1,0 +1,1 @@
+HWLIB_AddExecutable(EmptyTest main.cpp)

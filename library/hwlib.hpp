@@ -8,6 +8,11 @@
 // (See accompanying file LICENSE_1_0.txt or copy at 
 // http://www.boost.org/LICENSE_1_0.txt)
 //
+// Copyright : LukkenS 2022
+// All modifications are distributed under the GNU General Public License version 2 only
+// (See accompanying file LICENSE_1_1.txt)
+// https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+//
 // ==========================================================================
 
 // An application defines the appropriate HWLIB_TARGET_* marco and 
@@ -91,10 +96,15 @@
    #include HWLIB_INCLUDE( hwlib-scouting-lock.hpp )
 #endif
 
+#ifdef HWLIB_TARGET_RP2040
+    #define HWLIB_TARGET
+    #include HWLIB_INCLUDE(targets/hwlib-rp2040.hpp)
+#endif
+
 /// - HWLIB_TARGET_native : Windows native
 #ifdef HWLIB_TARGET_Windows
    #define HWLIB_TARGET
-   #include HWLIB_INCLUDE( targets/hwlib-native-sfml.hpp )
+   #include HWLIB_INCLUDE(targets/hwlib-native-sfml.hpp)
 #endif
 
 /// - HWLIB_TARGET_native : Linux native 
@@ -113,6 +123,8 @@
    #include HWLIB_INCLUDE( targets/hwlib-none.hpp )
 #endif
 
-#include HWLIB_INCLUDE( shields/hwlib-arduino-multifunction-shield.hpp )
+#include HWLIB_TARGET
+
+//#include HWLIB_INCLUDE( shields/hwlib-arduino-multifunction-shield.hpp )
 
 #endif // HWLIB_ALL_H

@@ -28,6 +28,11 @@ Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE_1_0.txt or copy at 
 http://www.boost.org/LICENSE_1_0.txt)     
 
-note: include/hwlib-arduino-due-system-sam3xa.inc is (c) atmel, 
-under asf license.
-      
+note: include/hwlib-arduino-due-system-sam3xa.inc is (c) Atmel (Microchip), 
+under the ASF license.
+
+(c) LukkenS 2022
+
+Changes made (by LukkenS) are Distributed under the GNU General Public License version 2 only
+(See accompanying file LICENSE_1_1.txt or the original at
+https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
