@@ -25,3 +25,4 @@ bmptk_*_stack.c
 _doxygen.bat
 html
 /test/native/12-10-*/
+/test/native/4-*/
