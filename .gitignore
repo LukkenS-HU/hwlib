@@ -26,3 +26,5 @@ _doxygen.bat
 html
 /test/native/12-10-*/
 /test/native/4-*/
+/test/native/5-*/
+/test/native/6-*/

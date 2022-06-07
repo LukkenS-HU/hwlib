@@ -69,8 +69,10 @@ namespace hwlib
             explicit rp2040_pin_base(pins pinNumber, bool output)
                     : _pinNumber(pinNumber)
             {
+                gpio_set_function((uint)pinNumber, GPIO_FUNC_NULL);
+
                 gpio_init((uint)pinNumber);
-                gpio_set_dir((uint)pinNumber, output);
+                SetDirection(output);
             }
 
             [[nodiscard]]
@@ -82,6 +84,11 @@ namespace hwlib
             void SetPinNumber(pins value)
             {
                 _pinNumber = value;
+            }
+
+            void SetDirection(bool output)
+            {
+                gpio_set_dir(GetPinNumber(), output);
             }
 
         private:
@@ -99,6 +106,21 @@ namespace hwlib
             bool read() override
             {
                 return gpio_get(GetPinNumber());
+            }
+
+            void pullup_enable()
+            {
+                gpio_pull_up(GetPinNumber());
+            }
+
+            void pulldown_enable()
+            {
+                gpio_pull_down(GetPinNumber());
+            }
+
+            void pull_disable()
+            {
+                gpio_disable_pulls(GetPinNumber());
             }
         };
 
@@ -118,6 +140,52 @@ namespace hwlib
             void flush() override
             {
             }
+        };
+
+        class pin_in_out : public pin_in,
+                           public pin_out,
+                           public pin_oc,
+                           public hwlib::pin_in_out
+        {
+        public:
+            explicit pin_in_out(pins pinNumber)
+            : pin_in(pinNumber), pin_out(pinNumber), rp2040_pin_base(pinNumber, true)
+            {
+
+            }
+
+            void direction_set_input() override
+            {
+                SetDirection(false);
+            }
+
+            bool read() override
+            {
+                return pin_in::read();
+            }
+
+            void direction_set_output() override
+            {
+                SetDirection(true);
+            }
+
+            void write(bool x) override
+            {
+                pin_out::write(x);
+            }
+
+            void refresh() override
+            {
+                pin_in::refresh();
+            }
+
+            void flush() override
+            {
+                pin_out::flush();
+            }
+
+            void direction_flush() override
+            { }
         };
 
         // TODO: HWLIB seems to have a very particular way of handling I2C that does not really work with hardware implementations,
@@ -144,6 +212,11 @@ namespace hwlib
     void wait_ms(int_fast32_t n)
     {
         sleep_ms(n);
+    }
+
+    void wait_us(int_fast32_t n)
+    {
+        sleep_us(n);
     }
 
 #endif
