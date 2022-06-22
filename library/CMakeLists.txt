@@ -10,9 +10,19 @@ function(HWLIB_AddExecutable name)
     endforeach ()
 endfunction()
 
+function(HWLIB_TargetLinkLibraries name)
+    foreach (target IN LISTS HWLIB_AVAILABLE_TARGETS)
+        _target_link_libraries(${name} ${target} ${ARGN})
+    endforeach ()
+endfunction()
+
+function(_target_link_libraries executableName targetName)
+    target_link_libraries(${executableName}_${targetName} ${ARGN})
+endfunction()
+
 function(_add_target_executable executableName targetName)
     add_executable(${executableName}_${targetName} ${ARGN})
-    target_link_libraries(${executableName}_${targetName} hwlib hwlib_target_${targetName})
+    _target_link_libraries(${executableName} ${targetName} hwlib hwlib_target_${targetName})
 endfunction()
 
 macro(_add_target targetName)
