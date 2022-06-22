@@ -108,105 +108,118 @@ namespace teensy_40
      */
     inline void wait_32_nops()
     {
-         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
-         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
-         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
-         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
-         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
-         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
         asm("nop");
-         asm("nop");
+        asm("nop");
+        asm("nop");
+        asm("nop");
+        asm("nop");
+        asm("nop");
+        asm("nop");
+        asm("nop");
         asm("nop");
     }
 
     class pin_out : public hwlib::pin_out
     {
     private:
-        const mimxrt1062::core_pin &myCorePin;
-        const uint32_t configMask = ((0b0 << 16) /*HYS*/| (0b00 << 14) /*PUS*/ | (0b0<<13) /*PUE*/ | (0b1 << 12) /*PKE*/ | (0b0 << 11) /*ODE*/ |  (0b10 << 6) /*SPEED*/ | (0b110 << 3) /*DSE*/ | 0b0 /*SRE*/ );
+        const mimxrt1062::core_pin& myCorePin;
+        const uint32_t configMask = ((0b0 << 16) /*HYS*/| (0b00 << 14) /*PUS*/ | (0b0 << 13) /*PUE*/ |
+                                     (0b1 << 12) /*PKE*/ | (0b0 << 11) /*ODE*/ | (0b10 << 6) /*SPEED*/ |
+                                     (0b110 << 3) /*DSE*/ | 0b0 /*SRE*/ );
     public:
         pin_out(pins pin_number) : myCorePin(mimxrt1062::core_pin_struct_array[(int)pin_number])
         {
             mimxrt1062::writeIOMUXMUXCTL(myCorePin.IOMUXC_MUX_control_register_array_index, 0b0101);
             mimxrt1062::writeIOMUXPADCTL(myCorePin.IOMUXC_PAD_control_register_array_index, configMask);
-            reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->GDIR |= (1 << myCorePin.GPIO_port_bit_number);
+            reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->GDIR |= (1
+                    << myCorePin.GPIO_port_bit_number);
         }
 
         void write(bool x) override
         {
-            (x 
-                ? reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->DR_SET 
-                : reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->DR_CLEAR
+            (x
+             ? reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->DR_SET
+             : reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->DR_CLEAR
             ) = (1 << myCorePin.GPIO_port_bit_number);
         }
 
         void flush() override
         {
         }
+
         /**
          * @brief Function to Toggle the GPIO on and off
          * 
          */
         void toggle()
         {
-            reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->DR_TOGGLE |= (1 << myCorePin.GPIO_port_bit_number);
+            reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->DR_TOGGLE |= (1
+                    << myCorePin.GPIO_port_bit_number);
         }
     };
 
     class pin_in : public hwlib::pin_in
     {
-    // this class also has pull up and pull down enable functions as these are later added by WOVO to hwlib-examples. The pin is pull down by default
+        // this class also has pull up and pull down enable functions as these are later added by WOVO to hwlib-examples. The pin is pull down by default
     private:
-        const mimxrt1062::core_pin &myCorePin;
-        const uint32_t configMask = ((0b1 << 16) /*HYS*/| (0b00 << 14) /*PUS*/ | (0b1<<13) /*PUE*/ | (0b1 << 12) /*PKE*/ | (0b0 << 11) /*ODE*/ |  (0b10 << 6) /*SPEED*/ | (0b111 << 3) /*DSE*/ | 0b0 /*SRE*/ );
+        const mimxrt1062::core_pin& myCorePin;
+        const uint32_t configMask = ((0b1 << 16) /*HYS*/| (0b00 << 14) /*PUS*/ | (0b1 << 13) /*PUE*/ |
+                                     (0b1 << 12) /*PKE*/ | (0b0 << 11) /*ODE*/ | (0b10 << 6) /*SPEED*/ |
+                                     (0b111 << 3) /*DSE*/ | 0b0 /*SRE*/ );
     public:
         pin_in(pins pin_number) : myCorePin(mimxrt1062::core_pin_struct_array[(int)pin_number])
         {
             mimxrt1062::writeIOMUXMUXCTL(myCorePin.IOMUXC_MUX_control_register_array_index, 0b0101);
             mimxrt1062::writeIOMUXPADCTL(myCorePin.IOMUXC_PAD_control_register_array_index, configMask);
-            reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->GDIR &= ~(1 << myCorePin.GPIO_port_bit_number);
+            reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->GDIR &= ~(1
+                    << myCorePin.GPIO_port_bit_number);
         }
 
         bool read() override
         {
-            return (reinterpret_cast<uint32_t>(reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->PSR) & (1 << myCorePin.GPIO_port_bit_number)) != 0;
+            return (reinterpret_cast<uint32_t>(reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->PSR) &
+                    (1 << myCorePin.GPIO_port_bit_number)) != 0;
         }
 
         void refresh() override
         {
             // does this even do something?
-            reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->DR_CLEAR |= (1 << myCorePin.GPIO_port_bit_number);
+            reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->DR_CLEAR |= (1
+                    << myCorePin.GPIO_port_bit_number);
         }
+
         /**
          * @brief Function to enable the embedded 22k pull up resistor. The pin_in class is pulled down by default. 
          * 
          */
         void pullup_enable()
         {
-            uint32_t pullupConfigMask = ((0b1 << 16) /*HYS*/| (0b11 << 14) /*PUS*/ | (0b1<<13) /*PUE*/ | (0b1 << 12) /*PKE*/ | (0b0 << 11) /*ODE*/ |  (0b10 << 6) /*SPEED*/ | (0b111 << 3) /*DSE*/ | 0b0 /*SRE*/ );
+            uint32_t pullupConfigMask = ((0b1 << 16) /*HYS*/| (0b11 << 14) /*PUS*/ | (0b1 << 13) /*PUE*/ |
+                                         (0b1 << 12) /*PKE*/ | (0b0 << 11) /*ODE*/ | (0b10 << 6) /*SPEED*/ |
+                                         (0b111 << 3) /*DSE*/ | 0b0 /*SRE*/ );
             mimxrt1062::writeIOMUXPADCTL(myCorePin.IOMUXC_PAD_control_register_array_index, pullupConfigMask);
             wait_32_nops();
         }
@@ -225,33 +238,37 @@ namespace teensy_40
     class pin_adc : public hwlib::adc
     {
         // p. 3328 consumers guide
-        private:
-        const mimxrt1062::core_pin & myCorePin;
-        const uint32_t configMask = ((0b0 << 16) /*HYS*/| (0b00 << 14) /*PUS*/ | (0b0<<13) /*PUE*/ | (0b0 << 12) /*PKE*/ | (0b0 << 11) /*ODE*/ |  (0b10 << 6) /*SPEED*/ | (0b110 << 3) /*DSE*/ | 0b0 /*SRE*/ );
-        public:
+    private:
+        const mimxrt1062::core_pin& myCorePin;
+        const uint32_t configMask = ((0b0 << 16) /*HYS*/| (0b00 << 14) /*PUS*/ | (0b0 << 13) /*PUE*/ |
+                                     (0b0 << 12) /*PKE*/ | (0b0 << 11) /*ODE*/ | (0b10 << 6) /*SPEED*/ |
+                                     (0b110 << 3) /*DSE*/ | 0b0 /*SRE*/ );
+    public:
         pin_adc(pins pin_number) : hwlib::adc(12), myCorePin(mimxrt1062::core_pin_struct_array[(int)pin_number])
-        {   
+        {
             if (myCorePin.ad_channel == 0XFFFFFFFF) // what to do if pin_number is not an adc pin
             {
                 return;
             }
-            mimxrt1062::writeIOMUXPADCTL(myCorePin.IOMUXC_PAD_control_register_array_index,configMask); // disable keeper, NOTE on p.3331
-            mimxrt1062::writeIOMUXMUXCTL(myCorePin.IOMUXC_MUX_control_register_array_index, 0b0101); // enable the gpio that adc uses
+            mimxrt1062::writeIOMUXPADCTL(myCorePin.IOMUXC_PAD_control_register_array_index,
+                    configMask); // disable keeper, NOTE on p.3331
+            mimxrt1062::writeIOMUXMUXCTL(myCorePin.IOMUXC_MUX_control_register_array_index,
+                    0b0101); // enable the gpio that adc uses
             // enable the adc clocks to adc1.
-            CCM->CCGR1 &= ~(0b11 <<16); // adc1
+            CCM->CCGR1 &= ~(0b11 << 16); // adc1
             CCM->CCGR1 |= (0b11 << 16); // adc1
             // CCM->CCGR1 &= ~(0b11 <<8); // adc2
             // CCM->CCGR1 |= (0b11 << 8); // adc2
 
             ADC1->GC &= ~(0b11111111); // set to: no cal, single conversion, no hardware average, no compare function, no compare function greater than, no compare function range, no DMA, Asynchronous clock enabled for output.
-            ADC1->GC |=  (0b00000001);
+            ADC1->GC |= (0b00000001);
             // ADC2->GC &= ~(0b11111111); // set to: no cal, single conversion, no hardware average, no compare function, no compare function greater than, no compare function range, no DMA, Asynchronous clock enabled for output.
             // ADC2->GC |=  (0b00000001);
-            
+
             uint32_t config = 0;
-            config |= (0b10<<2); // adc conversion to 12 bit resolution
-            config |= (0b1<<4); // long sampling on (ADLSMP bit)
-            config |= (0b11<<8); // sample period to 25 clocks (highest, ADSTS bits)
+            config |= (0b10 << 2); // adc conversion to 12 bit resolution
+            config |= (0b1 << 4); // long sampling on (ADLSMP bit)
+            config |= (0b11 << 8); // sample period to 25 clocks (highest, ADSTS bits)
             config |= (0b11); // Asynchronous clock as input
             config |= (0b01 << 5); // divide input clock by 2
             ADC1->CFG &= ~(0b1111111111111111); // adc1
@@ -261,19 +278,22 @@ namespace teensy_40
 
             // calibrate using the on chip calibration function
             ADC1->GC |= (0b1 << 7);
-            while((ADC1->GC & (0b1 << 7)) != 0){} // check if the CAL bit is still high, if not, calibration is done
+            while ((ADC1->GC & (0b1 << 7)) != 0)
+            {} // check if the CAL bit is still high, if not, calibration is done
             // ADC2->GC |= (0b1 << 7);
             // while((ADC2->GC & (0b1 << 7)) != 0){} // check if the CAL bit is still high, if not, calibration is done
         };
-        
+
         adc_value_type read() override
         {
-            if (myCorePin.ad_channel == 0xFFFFFFFF) // if channel is this number, the wrong pin is used (need to be a0 / a9)
+            if (myCorePin.ad_channel ==
+                0xFFFFFFFF) // if channel is this number, the wrong pin is used (need to be a0 / a9)
             {
                 return 0xFFFFFFFF;
             }
             ADC1->HC[0] = myCorePin.ad_channel; // write channel in hc to start reading the pin and start the conversion process
-            while((ADC1->HS & 0b1) == 0 ){} //wait till the conversion complete (ADACT p. 3368)
+            while ((ADC1->HS & 0b1) == 0)
+            {} //wait till the conversion complete (ADACT p. 3368)
             return (adc_value_type)ADC1->R[0]; //read from the ADC1 -> R0 register
         }
 
@@ -281,7 +301,8 @@ namespace teensy_40
         {
             // calibrate using the on chip calibration function
             ADC1->GC |= (0b1 << 7);
-            while((ADC1->GC & (0b1 << 7)) != 0){} // check if the CAL bit is still high, if not, calibration is done
+            while ((ADC1->GC & (0b1 << 7)) != 0)
+            {} // check if the CAL bit is still high, if not, calibration is done
             return;
         }
     };
@@ -289,35 +310,41 @@ namespace teensy_40
     class pin_in_out : public hwlib::pin_in_out
     {
         // mind that the setting of directions, can require a wait in some cases. The chip needs some time to actually set the direction to input or output. 
-        private:
-        const mimxrt1062::core_pin & myCorePin;
-        const uint32_t configMask = ((0b1 << 16) /*HYS*/| (0b00 << 14) /*PUS*/ | (0b1<<13) /*PUE*/ | (0b1 << 12) /*PKE*/ | (0b0 << 11) /*ODE*/ |  (0b10 << 6) /*SPEED*/ | (0b111 << 3) /*DSE*/ | 0b0 /*SRE*/ );
-        public:
+    private:
+        const mimxrt1062::core_pin& myCorePin;
+        const uint32_t configMask = ((0b1 << 16) /*HYS*/| (0b00 << 14) /*PUS*/ | (0b1 << 13) /*PUE*/ |
+                                     (0b1 << 12) /*PKE*/ | (0b0 << 11) /*ODE*/ | (0b10 << 6) /*SPEED*/ |
+                                     (0b111 << 3) /*DSE*/ | 0b0 /*SRE*/ );
+    public:
         pin_in_out(pins pin_number) : myCorePin(mimxrt1062::core_pin_struct_array[(int)pin_number])
         {
-            mimxrt1062::writeIOMUXMUXCTL(myCorePin.IOMUXC_MUX_control_register_array_index,0b0101); 
-            mimxrt1062::writeIOMUXPADCTL(myCorePin.IOMUXC_MUX_control_register_array_index,configMask);
+            mimxrt1062::writeIOMUXMUXCTL(myCorePin.IOMUXC_MUX_control_register_array_index, 0b0101);
+            mimxrt1062::writeIOMUXPADCTL(myCorePin.IOMUXC_MUX_control_register_array_index, configMask);
         }
 
         void direction_set_input() override
         {
-            reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->GDIR &= ~(1 << myCorePin.GPIO_port_bit_number); // set the pin to read mode
+            reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->GDIR &= ~(1
+                    << myCorePin.GPIO_port_bit_number); // set the pin to read mode
         }
 
         bool read() override
         {
-            return (reinterpret_cast<uint32_t>(reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->PSR) & (1 << myCorePin.GPIO_port_bit_number)) != 0; 
+            return (reinterpret_cast<uint32_t>(reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->PSR) &
+                    (1 << myCorePin.GPIO_port_bit_number)) != 0;
         }
 
         void refresh() override
         {
             // does this even do something?
-            reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->DR_CLEAR |= (1 << myCorePin.GPIO_port_bit_number);
+            reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->DR_CLEAR |= (1
+                    << myCorePin.GPIO_port_bit_number);
         }
 
-          void direction_set_output() override
-        {    
-            reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->GDIR |= (1 << myCorePin.GPIO_port_bit_number); // set the pin to write mode
+        void direction_set_output() override
+        {
+            reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->GDIR |= (1
+                    << myCorePin.GPIO_port_bit_number); // set the pin to write mode
         }
 
         void direction_flush() override
@@ -325,11 +352,11 @@ namespace teensy_40
             // Function not implemented, calling set input or output immidiately sets the pin direction
         }
 
-        void write( bool x ) override
+        void write(bool x) override
         {
-            (x 
-                ? reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->DR_SET 
-                : reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->DR_CLEAR
+            (x
+             ? reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->DR_SET
+             : reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->DR_CLEAR
             ) |= (1 << myCorePin.GPIO_port_bit_number);
         }
 
@@ -339,41 +366,49 @@ namespace teensy_40
         }
 
     };
-    
+
     class pin_oc : public hwlib::pin_oc
     {
         // Mind that to use this class, an external 4k7 pull up or pull down is needed. For i2c a pull up is needed.
-        private:
-        const mimxrt1062::core_pin & myCorePin;
-        const uint32_t configMask = ((0b1 << 16) /*HYS*/| (0b00 << 14) /*PUS*/ | (0b0<<13) /*PUE*/ | (0b0 << 12) /*PKE*/ | (0b1 << 11) /*ODE*/ |  (0b11 << 6) /*SPEED*/ | (0b110 << 3) /*DSE*/ | 0b0 /*SRE*/ );
-        public:
+    private:
+        const mimxrt1062::core_pin& myCorePin;
+        const uint32_t configMask = ((0b1 << 16) /*HYS*/| (0b00 << 14) /*PUS*/ | (0b0 << 13) /*PUE*/ |
+                                     (0b0 << 12) /*PKE*/ | (0b1 << 11) /*ODE*/ | (0b11 << 6) /*SPEED*/ |
+                                     (0b110 << 3) /*DSE*/ | 0b0 /*SRE*/ );
+    public:
         pin_oc(pins pin_number) : myCorePin(mimxrt1062::core_pin_struct_array[(int)pin_number])
         {
-            mimxrt1062::writeIOMUXMUXCTL(myCorePin.IOMUXC_MUX_control_register_array_index,0b0101); 
-            mimxrt1062::writeIOMUXPADCTL(myCorePin.IOMUXC_MUX_control_register_array_index,configMask);
+            mimxrt1062::writeIOMUXMUXCTL(myCorePin.IOMUXC_MUX_control_register_array_index, 0b0101);
+            mimxrt1062::writeIOMUXPADCTL(myCorePin.IOMUXC_MUX_control_register_array_index, configMask);
         }
+
         bool read() override
         {
-            return (reinterpret_cast<uint32_t>(reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->PSR) & (1 << myCorePin.GPIO_port_bit_number)) != 0;
+            return (reinterpret_cast<uint32_t>(reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->PSR) &
+                    (1 << myCorePin.GPIO_port_bit_number)) != 0;
         }
-       
+
         void write(bool x) override
         {
             if (x)
             {
-               reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->GDIR &= ~(1 << myCorePin.GPIO_port_bit_number); // set the pin to read mode
+                reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->GDIR &= ~(1
+                        << myCorePin.GPIO_port_bit_number); // set the pin to read mode
                 wait_32_nops(); // this is needed (tested thoroughly!) do not touch. This is the shortest time that is needed to wait to let the pins change the input mode
             }
             else
             {
-                reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->GDIR |= (1 << myCorePin.GPIO_port_bit_number); // set the pin to write mode
+                reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->GDIR |= (1
+                        << myCorePin.GPIO_port_bit_number); // set the pin to write mode
                 wait_32_nops(); // this is needed (tested thoroughly!) do not touch. This is the shortest time that is needed to wait to let the pins change the input mode
             }
         }
+
         void refresh() override
         {
             //does this even do something?
-            reinterpret_cast<GPIO_Type *>(myCorePin.GPIO_port_base_adress)->DR_CLEAR |= (1 << myCorePin.GPIO_port_bit_number);
+            reinterpret_cast<GPIO_Type*>(myCorePin.GPIO_port_base_adress)->DR_CLEAR |= (1
+                    << myCorePin.GPIO_port_bit_number);
         }
 
         void flush() override
@@ -387,10 +422,12 @@ namespace teensy_40
     /// \endcond 
 
     bool uart_char_available();
-    char uart_getc();
-    void uart_putc( char c );
 
-    #ifdef _HWLIB_ONCE
+    char uart_getc();
+
+    void uart_putc(char c);
+
+#ifdef _HWLIB_ONCE
     // NOTICE! To use UART on the Teensy 4.0, you need to use pin 0 (rx) and pin 1 (tx) in combination with an TTL to USB hardware piece. 
     // Teensy does not have this on board (as fas as I know), and so it is not implemented to use the standard USB. Other TX or RX pins will not work.
     // I used a USB to TTL converter to read out the UART pins. Works good.
@@ -402,12 +439,12 @@ namespace teensy_40
      */
     void binCout(uint32_t byte)
 {
-	for (int i = 31; i >= 0; i--)
-	{
-		auto b = byte >> i;
-		b &= 1;
-		hwlib::cout << b;
-	}
+    for (int i = 31; i >= 0; i--)
+    {
+        auto b = byte >> i;
+        b &= 1;
+        hwlib::cout << b;
+    }
 }
     void uart_init()
     {
@@ -421,7 +458,7 @@ namespace teensy_40
         const mimxrt1062::core_pin & rx = mimxrt1062::core_pin_struct_array[0]; // teensy 4.0 rx1
         const mimxrt1062::core_pin & tx = mimxrt1062::core_pin_struct_array[1]; // teensy 4.0 tx1
         //======================================================
-        // this baudrate value was tested and works well, baudrate can only be between 9600 and 100.000. 
+        // this baudrate value was tested and works well, baudrate can only be between 9600 and 100.000.
         // 115200 gives to high offset because I was not able to find out which clock UART runs on (should be 480 Mhz, but this didn't work in the formula, see TODO below)
         uint32_t baudrate = 38400;
         uint8_t muxCtlConfigmask = 0b010; // uart config number for the mux ctl register
@@ -454,9 +491,9 @@ namespace teensy_40
         //======================================================
         // Copy paul with the FIFO thing, see if it works
         uint16_t tx_fifo_size = (((reinterpret_cast<LPUART_Type *>(tx.serial_base_adress) -> FIFO >> 4) & 0x07) << 2);
-	    uint8_t tx_water = (tx_fifo_size < 16) ? tx_fifo_size >> 1 : 7;
+        uint8_t tx_water = (tx_fifo_size < 16) ? tx_fifo_size >> 1 : 7;
         uint16_t rx_fifo_size = (((reinterpret_cast<LPUART_Type *>(rx.serial_base_adress) -> FIFO >> 0) & 0x07) << 2);
-	    uint8_t rx_water = (rx_fifo_size < 16) ? rx_fifo_size >> 1 : 7;
+        uint8_t rx_water = (rx_fifo_size < 16) ? rx_fifo_size >> 1 : 7;
         reinterpret_cast<LPUART_Type *>(rx.serial_base_adress) -> FIFO = (((rx_water & 0x03) << 16) | (tx_water & 0x03));
         reinterpret_cast<LPUART_Type *>(rx.serial_base_adress) -> FIFO |= ((1<<7) | (1<<3));
         //======================================================
@@ -541,7 +578,7 @@ namespace teensy_40
         reinterpret_cast<LPUART_Type *>(tx.serial_base_adress) -> DATA |= c;
     }
 
-    #endif // _HWLIB_ONCE
+#endif // _HWLIB_ONCE
 }; //namespace teensy_40
 #endif // TEENSY_40
 
@@ -551,22 +588,28 @@ namespace teensy_40
  */
 namespace hwlib
 {
-namespace target = ::teensy_40;
+    namespace target = ::teensy_40;
 
-void HWLIB_WEAK uart_putc( char c )
-{
-    teensy_40::uart_putc( c );
-}
+    void HWLIB_WEAK
 
-bool HWLIB_WEAK uart_char_available()
-{
-return teensy_40::uart_char_available();
-}
+    uart_putc(char c)
+    {
+        teensy_40::uart_putc(c);
+    }
 
-char HWLIB_WEAK uart_getc( )
-{
-return teensy_40::uart_getc();
-}
+    bool HWLIB_WEAK
+
+    uart_char_available()
+    {
+        return teensy_40::uart_char_available();
+    }
+
+    char HWLIB_WEAK
+
+    uart_getc()
+    {
+        return teensy_40::uart_getc();
+    }
 
 #ifdef _HWLIB_ONCE
     uint64_t now_ticks()

@@ -15,7 +15,8 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 /// random chain value
 /// 
@@ -26,13 +27,13 @@ namespace hwlib {
 /// To get a random chain of random numbers, set this variable
 /// to a random number, for instance from an A/D converter, or
 /// from timing a user action.
-extern uint_fast32_t random_chain_value;
+    extern uint_fast32_t random_chain_value;
 
 /// 32-bit random value
 /// 
 /// This functions returns a 32 bit (pseudo-) random
 /// value, derived from random_chain_value.
-uint_fast32_t HWLIB_WEAK rand();
+    uint_fast32_t HWLIB_WEAK rand();
 
 /// random value in a range
 /// 
@@ -41,10 +42,10 @@ uint_fast32_t HWLIB_WEAK rand();
 ///
 /// The value is derived from rand() by modulo calculation,
 /// so the randomness will be somewhat skewed.
-uint_fast32_t HWLIB_WEAK random_in( 
-   uint_fast32_t min, 
-   uint_fast32_t max 
-);
+    uint_fast32_t HWLIB_WEAK random_in(
+            uint_fast32_t min,
+            uint_fast32_t max
+    );
 
 /// random location in an xy range
 /// 
@@ -53,9 +54,9 @@ uint_fast32_t HWLIB_WEAK random_in(
 ///
 /// The values are derived from rand() by modulo calculation,
 /// so the randomness will be somewhat skewed.
-xy HWLIB_WEAK random_in( 
-   const xy & limit
-);
+    xy HWLIB_WEAK random_in(
+            const xy& limit
+    );
 
 
 // ===========================================================================
@@ -66,27 +67,30 @@ xy HWLIB_WEAK random_in(
 
 #ifdef _HWLIB_ONCE
 
-uint_fast32_t random_chain_value = 0;
+    uint_fast32_t random_chain_value = 0;
 
-uint_fast32_t rand(){ 
-   return random_chain_value = 1103515245L * random_chain_value + 12345L;
-}
+    uint_fast32_t rand()
+    {
+        return random_chain_value = 1103515245L * random_chain_value + 12345L;
+    }
 
-uint_fast32_t random_in( 
-   uint_fast32_t min, 
-   uint_fast32_t max 
-){
-   return min + ( rand() % ( max - min + 1 ) ); 
-}
+    uint_fast32_t random_in(
+            uint_fast32_t min,
+            uint_fast32_t max
+    )
+    {
+        return min + (rand() % (max - min + 1));
+    }
 
-xy HWLIB_WEAK random_in( 
-   const xy & limit
-){
-   return xy( 
-      random_in( 0, limit.x - 1 ),
-      random_in( 0, limit.y - 1 )  
-   );      
-}
+    xy HWLIB_WEAK random_in(
+            const xy& limit
+    )
+    {
+        return xy(
+                random_in(0, limit.x - 1),
+                random_in(0, limit.y - 1)
+        );
+    }
 
 #endif // #ifdef _HWLIB_ONCE
 

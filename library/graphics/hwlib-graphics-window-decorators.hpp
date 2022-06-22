@@ -15,40 +15,45 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 /// a window_part (subwindow of a larger window)
 /// 
 /// A window_part is a rectangular part of a larger window.
-class window_part_t : public window {
-private:
+    class window_part_t : public window
+    {
+    private:
 
-   window & w;
-   xy start;
-   
-   void write_implementation( xy pos, color col ) override {
-      w.write( start + pos, col );
-   }      
+        window& w;
+        xy start;
 
-public:      
+        void write_implementation(xy pos, color col) override
+        {
+            w.write(start + pos, col);
+        }
 
-   /// create a window_part from a larger window, its origin and its size
-   /// 
-   /// This call constructs a subwindow from a window, the start 
-   /// (top-left pixel) of the subwindow, and the size of the subwindow.
-   /// The foreground and background color are copied from the larger
-   /// window.
-   window_part_t( window & w, xy start, xy size ):
-      window( size, w.foreground, w.background ),
-      w( w ),
-      start( start )
-   {}   
-      
-   void flush() override {
-      w.flush();
-   }  
-   
-}; // class window_part_t
+    public:
+
+        /// create a window_part from a larger window, its origin and its size
+        ///
+        /// This call constructs a subwindow from a window, the start
+        /// (top-left pixel) of the subwindow, and the size of the subwindow.
+        /// The foreground and background color are copied from the larger
+        /// window.
+        window_part_t(window& w, xy start, xy size) :
+                window(size, w.foreground, w.background),
+                w(w),
+                start(start)
+        {
+        }
+
+        void flush() override
+        {
+            w.flush();
+        }
+
+    }; // class window_part_t
 
 
 // ==========================================================================
@@ -56,37 +61,41 @@ public:
 /// window_invert (invert writes to a window)
 /// 
 /// A window_inverts writes inverted to its larger window.
-class window_invert_t : public window {
-private:
+    class window_invert_t : public window
+    {
+    private:
 
-   window & w;
-   
-   void write_implementation( 
-      xy pos, 
-      color col
-   ) override {
-      w.write( pos, - col );
-   }      
+        window& w;
 
-   void flush() override {
-      w.flush();
-   }      
-   
-public:      
+        void write_implementation(
+                xy pos,
+                color col
+        ) override
+        {
+            w.write(pos, -col);
+        }
 
-   /// create a window_invert from a window
-   /// 
-   /// This call constructs a window_invert from a window.
-   /// The foreground and background color are the inverse 
-   /// of those of the minion window, and writes to the 
-   /// window_invert write the inverted
-   /// pixel color to the minion window.
-   window_invert_t( window & w ):
-      window( w.size, - w.foreground, - w.background ),
-      w( w )
-   {}   
+        void flush() override
+        {
+            w.flush();
+        }
 
-}; // class class window_invert
+    public:
+
+        /// create a window_invert from a window
+        ///
+        /// This call constructs a window_invert from a window.
+        /// The foreground and background color are the inverse
+        /// of those of the minion window, and writes to the
+        /// window_invert write the inverted
+        /// pixel color to the minion window.
+        window_invert_t(window& w) :
+                window(w.size, -w.foreground, -w.background),
+                w(w)
+        {
+        }
+
+    }; // class class window_invert
 
 
 // ===========================================================================
@@ -96,10 +105,10 @@ public:
 // ===========================================================================
 
 /// return a part of a window
-window_part_t part( window & w, xy start, xy size );
+    window_part_t part(window& w, xy start, xy size);
 
 /// return the inverse of a window
-window_invert_t invert( window & w );
+    window_invert_t invert(window& w);
 
 
 // ===========================================================================
@@ -110,13 +119,15 @@ window_invert_t invert( window & w );
 
 #ifdef _HWLIB_ONCE
 
-window_part_t part( window & w, xy start, xy size ){
-   return window_part_t( w, start, size );
-}   
+    window_part_t part(window& w, xy start, xy size)
+    {
+        return window_part_t(w, start, size);
+    }
 
-window_invert_t invert( window & w ){
-   return window_invert_t( w );
-}   
+    window_invert_t invert(window& w)
+    {
+        return window_invert_t(w);
+    }
 
 #endif // _HWLIB_ONCE
 

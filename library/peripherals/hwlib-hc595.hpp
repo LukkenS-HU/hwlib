@@ -15,8 +15,9 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
-   
+namespace hwlib
+{
+
 /// hc595 8-bit output shift register 
 /// 
 /// This class implements an interface to 
@@ -56,77 +57,90 @@ namespace hwlib {
 ///    - <A HREF="https://www.nxp.com/documents/data_sheet/74HC_HCT595.pdf">
 ///       74HC595/74HCT595 data sheet</A> (nxp, pdf)
 /// 
-class hc595 : public port_out {
-private:
-   spi_bus & bus;
-   pin_out & sel;
-   uint8_t write_buffer;
-     
-   // one_pin is an implementation detail
-   class one_pin : public pin_out {
-      hc595 & chip;
-      uint_fast8_t mask;
-      
-   public:
-      one_pin( hc595 & chip, uint_fast8_t n ): 
-         chip( chip ), 
-         mask{ static_cast< uint_fast8_t >( 0x01 << n ) }
-      {}
-      
-      void write( bool v ) override {
-         if( v ){
-            chip.write_buffer |= mask;
-         } else {
-            chip.write_buffer &= ~ mask;
-         }      
-      }   
-	  
-      void flush() override {
-         chip.flush();
-      }	  
-      
-   };  
-   
-public:
+    class hc595 : public port_out
+    {
+    private:
+        spi_bus& bus;
+        pin_out& sel;
+        uint8_t write_buffer;
 
-   /// construct an interface to an hc595 chip
-   ///
-   /// This constructor creates an interface to 
-   /// an hc595 8-bit output shift register chip
-   /// from the SPI bus it is connected to and 
-   /// and the active-low chip select line.
-   hc595( spi_bus & bus, pin_out & sel ):
-      bus( bus ), sel( sel ) {}    
+        // one_pin is an implementation detail
+        class one_pin : public pin_out
+        {
+            hc595& chip;
+            uint_fast8_t mask;
 
-   uint_fast8_t number_of_pins() override {
-      return 8;
-   }   
-      
-   void write( uint_fast16_t x ) override {
-      write_buffer = x; 
-   }  
+        public:
+            one_pin(hc595& chip, uint_fast8_t n) :
+                    chip(chip),
+                    mask{ static_cast< uint_fast8_t >( 0x01 << n ) }
+            {
+            }
 
-   void flush() override {
-      bus.transaction( sel ).write( write_buffer ); 
-   }
-   
-   /// the output pins of the chip
-   ///
-   /// The p0 ... p7 attributes represent the 8 
-   /// output pins of the chip. 
-   /// A write to one of these pins will affect (only) 
-   /// the corresponding output pin of the chip.
-   ///@{ 
-   one_pin p0{ *this, 0 };   
-   one_pin p1{ *this, 1 };   
-   one_pin p2{ *this, 2 };   
-   one_pin p3{ *this, 3 };   
-   one_pin p4{ *this, 4 };   
-   one_pin p5{ *this, 5 };   
-   one_pin p6{ *this, 6 };   
-   one_pin p7{ *this, 7 };   
-   ///@}   
-      
-}; // class hc595
-   
+            void write(bool v) override
+            {
+                if (v)
+                {
+                    chip.write_buffer |= mask;
+                }
+                else
+                {
+                    chip.write_buffer &= ~mask;
+                }
+            }
+
+            void flush() override
+            {
+                chip.flush();
+            }
+
+        };
+
+    public:
+
+        /// construct an interface to an hc595 chip
+        ///
+        /// This constructor creates an interface to
+        /// an hc595 8-bit output shift register chip
+        /// from the SPI bus it is connected to and
+        /// and the active-low chip select line.
+        hc595(spi_bus& bus, pin_out& sel) :
+                bus(bus), sel(sel)
+        {
+        }
+
+        uint_fast8_t number_of_pins() override
+        {
+            return 8;
+        }
+
+        void write(uint_fast16_t x) override
+        {
+            write_buffer = x;
+        }
+
+        void flush() override
+        {
+            bus.transaction(sel).write(write_buffer);
+        }
+
+        /// the output pins of the chip
+        ///
+        /// The p0 ... p7 attributes represent the 8
+        /// output pins of the chip.
+        /// A write to one of these pins will affect (only)
+        /// the corresponding output pin of the chip.
+        ///@{
+        one_pin p0{ *this, 0 };
+        one_pin p1{ *this, 1 };
+        one_pin p2{ *this, 2 };
+        one_pin p3{ *this, 3 };
+        one_pin p4{ *this, 4 };
+        one_pin p5{ *this, 5 };
+        one_pin p6{ *this, 6 };
+        one_pin p7{ *this, 7 };
+        ///@}
+
+    }; // class hc595
+
 }; // namespace hwlib

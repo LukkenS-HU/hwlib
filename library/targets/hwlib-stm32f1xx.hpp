@@ -39,7 +39,8 @@
 ///    - <A HREF="http://www.st.com/content/ccc/resource/technical/document/reference_manual/59/b9/ba/7f/11/af/43/d5/CD00171190.pdf/files/CD00171190.pdf/jcr:content/translations/en.CD00171190.pdf">
 ///       RM0008 STM32F1xxx reference manual</A> (pdf)
 ///
-namespace stm32f1xx {
+namespace stm32f1xx
+{
 
 // the 
 //   - enum class pins
@@ -48,7 +49,8 @@ namespace stm32f1xx {
 // must have been declared before this file is included
 
 /// \cond INTERNAL 
-    GPIO_TypeDef &__attribute__((weak)) port_registers(uint32_t port) {
+    GPIO_TypeDef& __attribute__((weak)) port_registers(uint32_t port)
+    {
 
         // a bit of a cludge to put this here:
         // enable the clock to all GPIO ports
@@ -56,63 +58,70 @@ namespace stm32f1xx {
                 RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN |
                 RCC_APB2ENR_IOPCEN | RCC_APB2ENR_IOPDEN;
 
-        switch (port) {
-            case 0  :
-                return *GPIOA;
-            case 1  :
-                return *GPIOB;
-            case 2  :
-                return *GPIOC;
-            case 3  :
-                return *GPIOD;
-            default :
-                break;
+        switch (port)
+        {
+        case 0  :
+            return *GPIOA;
+        case 1  :
+            return *GPIOB;
+        case 2  :
+            return *GPIOC;
+        case 3  :
+            return *GPIOD;
+        default :
+            break;
         }
 
         // doesn't return
         HWLIB_PANIC_WITH_LOCATION;
     }
 
-    class pin_base {
+    class pin_base
+    {
     public:
-        volatile GPIO_TypeDef &port;
-        volatile uint32_t &config_word;
+        volatile GPIO_TypeDef& port;
+        volatile uint32_t& config_word;
         uint32_t pin;
         uint32_t config_offset;
         uint32_t mask;
 
-        void config(uint32_t conf) {
+        void config(uint32_t conf)
+        {
             config_word &= ~(0xF << config_offset);
             config_word |= conf << config_offset;
         }
 
-        pin_base( uint32_t port_number, uint32_t pin_number, uint32_t conf ):
-                port{ port_registers( port_number ) },
-                config_word{ ( pin_number < 8 ) ? port.CRL : port.CRH },
+        pin_base(uint32_t port_number, uint32_t pin_number, uint32_t conf) :
+                port{ port_registers(port_number) },
+                config_word{ (pin_number < 8) ? port.CRL : port.CRH },
                 pin{ pin_number },
                 config_offset{ 4 * (pin_number % 8) },
-                mask{ 0x1U << pin_number } 
+                mask{ 0x1U << pin_number }
         {
-            config( conf );
-            
+            config(conf);
+
             // a15 = JTDI pin
-            if(( port_number == 0 ) && ( pin_number == 15 )){
-               RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
-               AFIO->MAPR |= AFIO_MAPR_SWJ_CFG_1;
+            if ((port_number == 0) && (pin_number == 15))
+            {
+                RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
+                AFIO->MAPR |= AFIO_MAPR_SWJ_CFG_1;
             }
-            
+
             // b4 = NJTRST
-            if(( port_number == 1 ) && ( pin_number == 4 )){
-               RCC->APB2ENR = RCC->APB2ENR | 0b01; // Enable AFIO clock
-               AFIO->MAPR = ( AFIO->MAPR & ( ~ ( 0b111 <<24 )))  | ( 0b001 << 24 ); // JTA+SW-DP, but without NJRST
-            }   
+            if ((port_number == 1) && (pin_number == 4))
+            {
+                RCC->APB2ENR = RCC->APB2ENR | 0b01; // Enable AFIO clock
+                AFIO->MAPR = (AFIO->MAPR & (~(0b111 << 24))) | (0b001 << 24); // JTA+SW-DP, but without NJRST
+            }
         }
 
-        bool base_read() {
+        bool base_read()
+        {
             return ((port.IDR & mask) != 0);
         }
 
-        void base_write(bool v) {
+        void base_write(bool v)
+        {
             port.BSRR |= (v ? mask : (mask << 16));
         }
 
@@ -121,7 +130,8 @@ namespace stm32f1xx {
 /// \endcond 
 
 /// pin_in implementation for an stm32f103c8
-    class pin_in : public hwlib::pin_in, private pin_base {
+    class pin_in : public hwlib::pin_in, private pin_base
+    {
     public:
 
         /// stm32f103c8 pin_in constructor
@@ -132,7 +142,9 @@ namespace stm32f1xx {
         /// This constructor sets the pin direction to input.
         /// By default, the internal weak pull-up is enabled.
         pin_in(uint32_t port_number, uint32_t pin_number) :
-                pin_base{port_number, pin_number, 0x08} {}
+                pin_base{ port_number, pin_number, 0x08 }
+        {
+        }
 
         /// stm32f103c8 pin_in constructor
         ///
@@ -145,19 +157,25 @@ namespace stm32f1xx {
                 pin_in{
                         pin_info(name).port,
                         pin_info(name).pin
-                } {}
+                }
+        {
+        }
 
-        bool read() override {
+        bool read() override
+        {
             return base_read();
         }
 
-        void refresh() override {}
+        void refresh() override
+        {
+        }
 
 
     };
 
 /// pin_out implementation for an stm32f103c8
-    class pin_out : public hwlib::pin_out, private pin_base {
+    class pin_out : public hwlib::pin_out, private pin_base
+    {
     public:
 
         /// stm32f103c8 pin_out constructor
@@ -171,7 +189,9 @@ namespace stm32f1xx {
         /// to high or low, the set function must
         /// be called to do so.
         pin_out(uint32_t port_number, uint32_t pin_number) :
-                pin_base{port_number, pin_number, 0x03} {}
+                pin_base{ port_number, pin_number, 0x03 }
+        {
+        }
 
         /// stm32f103c8 pin_out constructor
         ///
@@ -187,18 +207,24 @@ namespace stm32f1xx {
                 pin_out{
                         pin_info(name).port,
                         pin_info(name).pin
-                } {}
+                }
+        {
+        }
 
-        void write(bool v) override {
+        void write(bool v) override
+        {
             base_write(v);
         }
 
-        void flush() override {}
+        void flush() override
+        {
+        }
 
     };
 
 /// pin_in_out implementation for an stm32f103c8
-    class pin_in_out : public hwlib::pin_in_out, private pin_base {
+    class pin_in_out : public hwlib::pin_in_out, private pin_base
+    {
     public:
 
         /// stm32f103c8 pin_out constructor
@@ -214,7 +240,9 @@ namespace stm32f1xx {
         /// to high or low, the set function must
         /// be called to do so.
         pin_in_out(uint32_t port_number, uint32_t pin_number) :
-                pin_base{port_number, pin_number, 0x08} {}
+                pin_base{ port_number, pin_number, 0x08 }
+        {
+        }
 
         /// stm32f103c8 pin_out constructor
         ///
@@ -232,29 +260,41 @@ namespace stm32f1xx {
                 pin_in_out{
                         pin_info(name).port,
                         pin_info(name).pin
-                } {}
+                }
+        {
+        }
 
-        void direction_set_input() override {
+        void direction_set_input() override
+        {
             config(0x08);
         }
 
-        bool read() override {
+        bool read() override
+        {
             return base_read();
         }
 
-        void direction_set_output() override {
+        void direction_set_output() override
+        {
             config(0x03);
         }
 
-        void write(bool v) override {
+        void write(bool v) override
+        {
             base_write(v);
         }
 
-        void flush() override {}
+        void flush() override
+        {
+        }
 
-        void refresh() override {}
+        void refresh() override
+        {
+        }
 
-        void direction_flush() override {}
+        void direction_flush() override
+        {
+        }
 
     };
 
@@ -263,11 +303,13 @@ namespace stm32f1xx {
 /// This class provides a 36 kHz output on chip pin PA6
 ///  that can be enabled or disabled by calling
 /// write( 1 ) resp. write( 0 ).
-    class a6_36kHz : public hwlib::pin_out {
+    class a6_36kHz : public hwlib::pin_out
+    {
     public:
 
         /// create the 36kHz output
-        a6_36kHz() {
+        a6_36kHz()
+        {
             RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;  // Enable GPIO port a
             RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;  // Enable Timer 3
 
@@ -292,19 +334,26 @@ namespace stm32f1xx {
         //
         /// Calling write( 1 ) enables the 36 kHz output, calling write( 0 )
         /// disables the output and makes the output low.
-        void write(bool b) override {
-            if (b) {
+        void write(bool b) override
+        {
+            if (b)
+            {
                 TIM3->CCER |= TIM_CCER_CC1E;
-            } else {
+            }
+            else
+            {
                 TIM3->CCER &= ~TIM_CCER_CC1E;
             }
         }
 
-        void flush() override {};
+        void flush() override
+        {
+        };
 
     }; // class a6_36kHz
 
-    class spi_bus_hardware : public hwlib::spi_bus {
+    class spi_bus_hardware : public hwlib::spi_bus
+    {
     private:
 
 
@@ -312,17 +361,23 @@ namespace stm32f1xx {
                 const size_t n,
                 const uint8_t data_out[],
                 uint8_t data_in[]
-        ) override {
-            for( uint_fast8_t i = 0; i < n; i++ ) {
-                if (data_out != nullptr) {
+        ) override
+        {
+            for (uint_fast8_t i = 0; i < n; i++)
+            {
+                if (data_out != nullptr)
+                {
                     SPI1->DR = (uint32_t)data_out[i]; //Write a byte to SPI hardware
-                    while (!(SPI1->SR & SPI_SR_TXE)) { // Wait for byte to be processed by SPI hardware
+                    while (!(SPI1->SR & SPI_SR_TXE))
+                    { // Wait for byte to be processed by SPI hardware
                         hwlib::wait_ns_busy(1);
                     }
                 }
 
-                if (data_in != nullptr) {
-                    while (!SPI1->SR & SPI_SR_RXNE) { //Wait for byte to be received
+                if (data_in != nullptr)
+                {
+                    while (!SPI1->SR & SPI_SR_RXNE)
+                    { //Wait for byte to be received
                         hwlib::wait_ns_busy(1);
                     }
                     data_in[i] = SPI1->DR;
@@ -351,7 +406,8 @@ namespace stm32f1xx {
         /// MISO:   A6
         spi_bus_hardware(
 
-        ){
+        )
+        {
             // Setup all the ports needed by the SPI bus
             RCC->APB2ENR |= RCC_APB2ENR_SPI1EN; //enable clock signal to spi
             RCC->APB2ENR |= RCC_APB2ENR_IOPAEN; //enable clock signal to peripheralport A (this is were spi ports reside)
@@ -388,7 +444,8 @@ namespace stm32f1xx {
     };
 
 /// pin_oc implementation for an stm32f103c8
-    class pin_oc : public hwlib::pin_oc, private pin_base {
+    class pin_oc : public hwlib::pin_oc, private pin_base
+    {
     public:
 
         /// stm32f103c8 pin_oc constructor
@@ -400,7 +457,9 @@ namespace stm32f1xx {
         /// to high or low, the set function must
         /// be called to do so.
         pin_oc(uint32_t port_number, uint32_t pin_number) :
-                pin_base{port_number, pin_number, 0x07} {}
+                pin_base{ port_number, pin_number, 0x07 }
+        {
+        }
 
         /// stm32f103c8 pin_oc constructor
         ///
@@ -414,73 +473,94 @@ namespace stm32f1xx {
                 pin_oc{
                         pin_info(name).port,
                         pin_info(name).pin
-                } {}
+                }
+        {
+        }
 
-        bool read() override {
+        bool read() override
+        {
             return base_read();
         }
 
-        void write(bool v) override {
+        void write(bool v) override
+        {
             base_write(v);
         }
 
-        void flush() override {}
+        void flush() override
+        {
+        }
 
-        void refresh() override {}
+        void refresh() override
+        {
+        }
 
     };
 
 /// the number of ticks per us
-    uint_fast64_t HWLIB_WEAK ticks_per_us() {
+    uint_fast64_t HWLIB_WEAK
+
+    ticks_per_us()
+    {
         return 64; //72;
     }
 
 /// returns the number of ticks since some fixed starting point
-    uint_fast64_t HWLIB_WEAK now_ticks() {
+    uint_fast64_t HWLIB_WEAK
+
+    now_ticks()
+    {
 
         static bool init_done = false;
-        if (!init_done) {
+        if (!init_done)
+        {
 
             // switch to the 72 MHz crystal/PLL clock, from stm32x.cpp,
             // some values taken from
             // https://github.com/rogerclarkmelbourne/STM32duino-bootloader
 
             // Flash 2 wait state
-            FLASH->ACR &= (uint32_t) ((uint32_t) ~FLASH_ACR_LATENCY);
-            FLASH->ACR |= (uint32_t) FLASH_ACR_LATENCY_2;
+            FLASH->ACR &= (uint32_t)((uint32_t)
+            ~FLASH_ACR_LATENCY);
+            FLASH->ACR |= (uint32_t)FLASH_ACR_LATENCY_2;
 
             // Enable Prefetch Buffer
             FLASH->ACR |= FLASH_ACR_PRFTBE;
 
             // enable HSE and wait for it
             RCC->CR |= RCC_CR_HSEON;
-            while ((RCC->CR & RCC_CR_HSERDY) == 0) {}
+            while ((RCC->CR & RCC_CR_HSERDY) == 0)
+            {}
 
 
             //  PLL configuration: PLLCLK = HSE * 9 = 72 MHz
-            RCC->CFGR &= (uint32_t) ((uint32_t) ~(
+            RCC->CFGR &= (uint32_t)((uint32_t)
+            ~(
                     RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL));
-            RCC->CFGR |= (uint32_t) (RCC_CFGR_PLLSRC | RCC_CFGR_PLLMULL4);
+            RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC | RCC_CFGR_PLLMULL4);
 
             // Enable PLL and wait for it
             RCC->CR |= RCC_CR_PLLON;
-            while ((RCC->CR & RCC_CR_PLLRDY) == 0) {}
+            while ((RCC->CR & RCC_CR_PLLRDY) == 0)
+            {}
 
             // HCLK = SYSCLK
-            RCC->CFGR |= (uint32_t) RCC_CFGR_HPRE_DIV1;
+            RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
 
             // PCLK2 = HCLK
-            RCC->CFGR |= (uint32_t) RCC_CFGR_PPRE2_DIV1;
+            RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;
 
             // PCLK1 = HCLK / 2
-            RCC->CFGR |= (uint32_t) RCC_CFGR_PPRE1_DIV2;
+            RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;
 
             // Select PLL as system clock source
-            RCC->CFGR &= (uint32_t) ((uint32_t) ~(RCC_CFGR_SW));
-            RCC->CFGR |= (uint32_t) RCC_CFGR_SW_PLL;
+            RCC->CFGR &= (uint32_t)((uint32_t)
+            ~(RCC_CFGR_SW));
+            RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;
 
             // Wait till PLL is used as system clock source
-            while ((RCC->CFGR & (uint32_t) RCC_CFGR_SWS) != (uint32_t) 0x08) {}
+            while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)0x08)
+            {}
 
             // start the systick timer
             SysTick->CTRL = 0;         // stop the timer
@@ -496,7 +576,8 @@ namespace stm32f1xx {
 
         // the timer ticks down, but we want an up counter
         unsigned int low = 0xFFFFFF - (SysTick->VAL & 0xFFFFFF);
-        if (low < last_low) {
+        if (low < last_low)
+        {
 
             // the timer rolled over, so increment the high part
             high += 0x1ULL << 24;
@@ -582,7 +663,8 @@ namespace stm32f1xx {
 
 }; // namespace stm32f1xx
 
-namespace hwlib {
+namespace hwlib
+{
 
     void wait_ns(int_fast32_t n);
 
@@ -599,34 +681,43 @@ namespace hwlib {
 #define HWLIB_USE_HW_UART
 #ifdef HWLIB_USE_HW_UART
 
-    void HWLIB_WEAK uart_putc(char c) {
+    void HWLIB_WEAK
+
+    uart_putc(char c)
+    {
         stm32f1xx::uart_putc(c);
     }
 
-    bool HWLIB_WEAK uart_char_available() {
+    bool HWLIB_WEAK
+
+    uart_char_available()
+    {
         return stm32f1xx::uart_char_available();
     }
 
-    char HWLIB_WEAK uart_getc() {
+    char HWLIB_WEAK
+
+    uart_getc()
+    {
         return stm32f1xx::uart_getc();
     }
 
 #else
 
-   void HWLIB_WEAK uart_putc( char c ){
-   static target::pin_out pin( 0, 9 );
-   uart_putc_bit_banged_pin( c, pin );
-}
+    void HWLIB_WEAK uart_putc( char c ){
+    static target::pin_out pin( 0, 9 );
+    uart_putc_bit_banged_pin( c, pin );
+ }
 
-bool HWLIB_WEAK uart_char_available(){
-   static target::pin_in pin( 0, 8 );
-   return ! pin.read();
-}
+ bool HWLIB_WEAK uart_char_available(){
+    static target::pin_in pin( 0, 8 );
+    return ! pin.read();
+ }
 
-char HWLIB_WEAK uart_getc( ){
-   static target::pin_in pin( 0, 8 );
-   return uart_getc_bit_banged_pin( pin );
-}
+ char HWLIB_WEAK uart_getc( ){
+    static target::pin_in pin( 0, 8 );
+    return uart_getc_bit_banged_pin( pin );
+ }
 
 #endif
 #ifdef _HWLIB_ONCE

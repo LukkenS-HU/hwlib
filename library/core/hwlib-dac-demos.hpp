@@ -15,14 +15,15 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 /// \brief
 /// dac triangle waveform demo
 /// \details
 /// This functions outputs a triangle waveform on the DAC outpout,
 /// with step_ms milliseconds between each step.
-void dac_triangle( dac & d, uint_fast16_t step_ms = 10 );
+    void dac_triangle(dac& d, uint_fast16_t step_ms = 10);
 
 
 // ===========================================================================
@@ -31,20 +32,24 @@ void dac_triangle( dac & d, uint_fast16_t step_ms = 10 );
 //
 // ===========================================================================
 
-#ifdef _HWLIB_ONCE 
+#ifdef _HWLIB_ONCE
 
-void HWLIB_NORETURN dac_triangle( dac & d, uint_fast16_t step_ms ){
-   for(;;){
-      for( dac::dac_value_type i = 0; i <= d.dac_max_value; ++i ){
-          d.write( i );
-          wait_ms( step_ms );
-      }
-      for( dac::dac_value_type i = d.dac_max_value; i >= 0; --i ){
-          d.write( i );
-          wait_ms( step_ms );
-      }
-   }
-}   
+    void HWLIB_NORETURN dac_triangle(dac& d, uint_fast16_t step_ms)
+    {
+        for (;;)
+        {
+            for (dac::dac_value_type i = 0; i <= d.dac_max_value; ++i)
+            {
+                d.write(i);
+                wait_ms(step_ms);
+            }
+            for (dac::dac_value_type i = d.dac_max_value; i >= 0; --i)
+            {
+                d.write(i);
+                wait_ms(step_ms);
+            }
+        }
+    }
 
 #endif // #ifdef _HWLIB_ONCE
 

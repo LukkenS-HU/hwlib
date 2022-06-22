@@ -18,131 +18,141 @@
 #define HWLIB_NATIVE_H
 
 #define _HWLIB_TARGET_WAIT_US_BUSY
+
 #include HWLIB_INCLUDE( ../hwlib-all.hpp )
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-namespace hwlib {
-	
-namespace target {
-   
-class window : public hwlib::window {
-private:
+namespace hwlib
+{
 
-   int m;
-   sf::RenderWindow w;
-   sf::Image image;
-   
-public:   
+    namespace target
+    {
 
-   window( 
-      xy size, 
-      color foreground = black, 
-      color background = white,
-      int m = 5 
-   ):
-      hwlib::window( size, foreground, background ),
-      m( m ),
-      w( sf::VideoMode( m * size.x, m * size.y ), "HWLIB-SFML window" )
-   {
-      image.create( m * size.x, m * size.y );
-      clear();
-      flush();
-   }	
-   
-   void poll(){
-      if ( w.isOpen() ){
-        sf::Event event;
-        while (w.pollEvent(event))
+        class window : public hwlib::window
         {
-            if (event.type == sf::Event::Closed)
-                w.close();
-        }
-      }	   
-   }
-   
-   void write_implementation( 
-      xy pos, 
-      color col
-   ) override {
-      for( int x = 0; x < m; ++x ){
-         for( int y = 0; y < m; ++y ){
-            image.setPixel( 
-               x + m * pos.x, y + m * pos.y, 
+        private:
+
+            int m;
+            sf::RenderWindow w;
+            sf::Image image;
+
+        public:
+
+            window(
+                    xy size,
+                    color foreground = black,
+                    color background = white,
+                    int m = 5
+            ) :
+                    hwlib::window(size, foreground, background),
+                    m(m),
+                    w(sf::VideoMode(m * size.x, m * size.y), "HWLIB-SFML window")
+            {
+                image.create(m * size.x, m * size.y);
+                clear();
+                flush();
+            }
+
+            void poll()
+            {
+                if (w.isOpen())
+                {
+                    sf::Event event;
+                    while (w.pollEvent(event))
+                    {
+                        if (event.type == sf::Event::Closed)
+                            w.close();
+                    }
+                }
+            }
+
+            void write_implementation(
+                    xy pos,
+                    color col
+            ) override
+            {
+                for (int x = 0; x < m; ++x)
+                {
+                    for (int y = 0; y < m; ++y)
+                    {
+                        image.setPixel(
+                                x + m * pos.x, y + m * pos.y,
 //               ( col != hwlib::black ) ? sf::Color::Black : sf::Color::White );
-               sf::Color( col.red, col.green, col.blue, 255 ) );
-         }
-      }   
-   }
-   
-   void flush() override {
-	   w.clear();
-      
-       sf::Texture texture;
-       texture.loadFromImage(image);
-	   
-       sf::Sprite sprite;
-       sprite.setTexture(texture, true);
-	   
-       w.draw(sprite);      
-       w.display();
-	   
-	   poll();
-   }
-   
-}; // class window
-	
-};	// namespace target
+                                sf::Color(col.red, col.green, col.blue, 255));
+                    }
+                }
+            }
+
+            void flush() override
+            {
+                w.clear();
+
+                sf::Texture texture;
+                texture.loadFromImage(image);
+
+                sf::Sprite sprite;
+                sprite.setTexture(texture, true);
+
+                w.draw(sprite);
+                w.display();
+
+                poll();
+            }
+
+        }; // class window
+
+    };    // namespace target
 
 #ifdef _HWLIB_ONCE
 
-uint64_t now_ticks(){
-	
-   static sf::Clock clock;
-   sf::Time elapsed = clock.getElapsedTime();
-   sf::Int64 usec = elapsed.asMicroseconds();
+    uint64_t now_ticks(){
 
-   return usec;
-}   
+       static sf::Clock clock;
+       sf::Time elapsed = clock.getElapsedTime();
+       sf::Int64 usec = elapsed.asMicroseconds();
 
-uint64_t ticks_per_us(){
-   return 1;
-}   
+       return usec;
+    }
 
-uint64_t now_us(){
-   return now_ticks() / ticks_per_us();
-}   
+    uint64_t ticks_per_us(){
+       return 1;
+    }
 
-void wait_us_busy( int_fast32_t n ){
-   auto end = now_us() + n;
-   while( now_us() < end ){}
-}
+    uint64_t now_us(){
+       return now_ticks() / ticks_per_us();
+    }
 
-void wait_ns( int_fast32_t n ){
-   wait_us( n / 1'000 );
-}
+    void wait_us_busy( int_fast32_t n ){
+       auto end = now_us() + n;
+       while( now_us() < end ){}
+    }
 
-void wait_us( int_fast32_t n ){
-   wait_us_busy( n );
-}
+    void wait_ns( int_fast32_t n ){
+       wait_us( n / 1'000 );
+    }
 
-void wait_ms( int_fast32_t n ){
-   wait_us( n * 1'000 );
-}
+    void wait_us( int_fast32_t n ){
+       wait_us_busy( n );
+    }
 
-void uart_putc( char c ){
-   std::cout << c << std::flush;
-}
+    void wait_ms( int_fast32_t n ){
+       wait_us( n * 1'000 );
+    }
 
-char uart_getc(){
-   return std::getchar();   
-}
+    void uart_putc( char c ){
+       std::cout << c << std::flush;
+    }
 
-bool HWLIB_WEAK uart_char_available(){
-   return 1;
-}
+    char uart_getc(){
+       return std::getchar();
+    }
 
-void *__gxx_personality_v0;
+    bool HWLIB_WEAK uart_char_available(){
+       return 1;
+    }
+
+    void *__gxx_personality_v0;
 
 #endif // #ifdef HBLIB_ONCE
 

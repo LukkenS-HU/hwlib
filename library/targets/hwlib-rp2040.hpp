@@ -149,9 +149,9 @@ namespace hwlib
         {
         public:
             explicit pin_in_out(pins pinNumber)
-            : pin_in(pinNumber), pin_out(pinNumber), rp2040_pin_base(pinNumber, true)
+                    : pin_in(pinNumber), pin_out(pinNumber), rp2040_pin_base(pinNumber, true)
             {
-
+                pullup_enable();
             }
 
             void direction_set_input() override
@@ -185,19 +185,9 @@ namespace hwlib
             }
 
             void direction_flush() override
-            { }
+            {
+            }
         };
-
-        // TODO: HWLIB seems to have a very particular way of handling I2C that does not really work with hardware implementations,
-        //       Since it seems to manually send every control message instead
-        //       (The repository doesn't seem to contain any hardware I2C implementations either)
-        //       of letting the potential hardware implementation handle the device address for example.
-        //       Changing the HWLIB api would break everything, so I'll just leave the 'BitBanged' implementation for what it is
-        //       and pretend the RP2040 does not actually have hardware I2C.
-        namespace I2C
-        {
-
-        }
     }
 
     namespace target = hwlib::RP2040;

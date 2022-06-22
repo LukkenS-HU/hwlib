@@ -10,8 +10,8 @@ function(HWLIB_AddExecutable name)
     endforeach ()
 endfunction()
 
-function(_add_target_executable executableName targetName sources)
-    add_executable(${executableName}_${targetName} ${sources})
+function(_add_target_executable executableName targetName)
+    add_executable(${executableName}_${targetName} ${ARGN})
     target_link_libraries(${executableName}_${targetName} hwlib hwlib_target_${targetName})
 endfunction()
 

@@ -15,7 +15,8 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 
 // ==========================================================================
@@ -28,12 +29,17 @@ namespace hwlib {
 /// 
 /// Inheriting from this class makes a class non-copyable
 /// and non-assignable.
-class noncopyable {
-public:   
-   noncopyable( const noncopyable& ) = delete;
-   noncopyable& operator=( const noncopyable& ) = delete;
-   constexpr noncopyable() {}
-   // ~noncopyable() {} // somehow requires the heap??
-};   
+    class noncopyable
+    {
+    public:
+        noncopyable(const noncopyable&) = delete;
+
+        noncopyable& operator=(const noncopyable&) = delete;
+
+        constexpr noncopyable()
+        {
+        }
+        // ~noncopyable() {} // somehow requires the heap??
+    };
 
 }; // namespace hwlib

@@ -15,18 +15,20 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 /// a font
 /// 
 /// A font provides an image for each supported character
-class font : public noncopyable {
-public:
+    class font : public noncopyable
+    {
+    public:
 
-   /// get image for a character
-   /// 
-   /// This function returns the image for the specified character.
-   virtual const image & operator[]( char c ) const = 0;
-};
+        /// get image for a character
+        ///
+        /// This function returns the image for the specified character.
+        virtual const image& operator[](char c) const = 0;
+    };
 
 }; // namespace hwlib

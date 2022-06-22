@@ -15,46 +15,60 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
-class ostream_prefix : ostream {
-private:
+    class ostream_prefix : ostream
+    {
+    private:
 
-   ostream & minion;
-   const char marker;
+        ostream& minion;
+        const char marker;
 
-public:
+    public:
 
-   ostream_mux( ostream & minion, char marker ): 
-      minion( minion ), marker( marker )
-   {}
+        ostream_mux( ostream
+        & minion,
+        char marker
+        ):
 
-   void putc( char c ) override {
-      minion.putc( marker );
-      minion.putc( c );
-   }
- 
-   void flush() override {
-      minion.flush();
-   }
+        minion ( minion ), marker(marker)
+        {
+        }
 
-}; // class ostream_prefix
+        void putc(char c) override
+        {
+            minion.putc(marker);
+            minion.putc(c);
+        }
 
-class istream_mux : ostream {
-private:
+        void flush() override
+        {
+            minion.flush();
+        }
 
-   ostream & minion;
+    }; // class ostream_prefix
 
-public:
+    class istream_mux : ostream
+    {
+    private:
 
-   ostream_mux( ostream & minion ): minion( minion ){}
+        ostream& minion;
 
-   void putc( char x ) override {
-   }
- 
-   void flush() override {
-   }
+    public:
 
-}; // class ostream_mux
-   
+        ostream_mux( ostream
+        & minion ):
+        minion( minion ){}
+
+        void putc(char x) override
+        {
+        }
+
+        void flush() override
+        {
+        }
+
+    }; // class ostream_mux
+
 }; // namespace hwlib

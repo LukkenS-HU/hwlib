@@ -15,8 +15,9 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
-	
+namespace hwlib
+{
+
 // nothing left after the 2018->2019 change, but the file is kept
-  
+
 }; // namespace hwlib

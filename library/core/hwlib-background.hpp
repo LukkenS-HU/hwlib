@@ -15,7 +15,8 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 
 // ==========================================================================
@@ -44,137 +45,153 @@ namespace hwlib {
 /// Note: the constructor of a bckground object must take care not to
 /// invoke waiting while the object construction isn't yet finished.
 ///
-class background_base : public noncopyable {
-private:
+    class background_base : public noncopyable
+    {
+    private:
 
-   static background_base * first;
-   static background_base * current;
-   static bool running;
-   background_base * next;	
+        static background_base* first;
+        static background_base* current;
+        static bool running;
+        background_base* next;
 
-public:
+    public:
 
-   /// background constructor
-   ///
-   /// The constructor will add this backround item 
-   /// to the list of background items.
-   background_base():
-	  next( first )
-   {
-      first = this;	  
-   }
-   
-   /// background destructor
-   ///
-   /// The destructor will remove this background item 
-   /// from the list of background items.
-   ~background_base(){
-	   
-      // find the pointer that points to us
-      for( background_base **p = &first; *p != nullptr; p = &(*p)->next ){
-         if( (*p) == this ){
-			 
-            //remove us from the list:
-            // make it point to the next background item
-            (*p) = next;
-            return;			
-		 }
-	  }		  
-   }
-   
-   /// keep doing background work
-   ///
-   /// Call this function instead of terminating the application
-   /// to continue performing the background work.
-   static void HWLIB_NORETURN run(){
-      for(;;){
-         do_background_work();       
-      }
-   }   
+        /// background constructor
+        ///
+        /// The constructor will add this backround item
+        /// to the list of background items.
+        background_base() :
+                next(first)
+        {
+            first = this;
+        }
 
-   /// do background work
-   ///
-   /// This function is called by the wait functions to do background work.
-   static void do_background_work(){
-	 
-      // do not run any background work when called from background work:
-      // this would seriously impact stack use and delay granularity
-      if( running ){
-         return;
-      }		 
-	   
-      // if no current work object, start at the start of the list
-      if( current == nullptr ){
-         current = first;
-      }
-	  
-      // if there is a current work item
-      if( current != nullptr ){
-		  
-		 // run it	  
-		 running = true;
-         current->base_work();
-         running = false;
-		 
-		 // next time round, it is the turn of the next work item in the list
-		 current = current->next;
-	  }		  
-   }
-   
-protected:
+        /// background destructor
+        ///
+        /// The destructor will remove this background item
+        /// from the list of background items.
+        ~background_base()
+        {
 
-   virtual void base_work() = 0;    
-   
-};
+            // find the pointer that points to us
+            for (background_base** p = &first; *p != nullptr; p = &(*p)->next)
+            {
+                if ((*p) == this)
+                {
 
-class background : public background_base {
-private:
+                    //remove us from the list:
+                    // make it point to the next background item
+                    (*p) = next;
+                    return;
+                }
+            }
+        }
 
-   void base_work() override {
-      work();
-   }
+        /// keep doing background work
+        ///
+        /// Call this function instead of terminating the application
+        /// to continue performing the background work.
+        static void HWLIB_NORETURN run()
+        {
+            for (;;)
+            {
+                do_background_work();
+            }
+        }
 
-    
-public:    
-   /// background work function
-   ///
-   /// This function will be called to do backround work for its class.
-   virtual void work() = 0;     
+        /// do background work
+        ///
+        /// This function is called by the wait functions to do background work.
+        static void do_background_work()
+        {
 
-};
+            // do not run any background work when called from background work:
+            // this would seriously impact stack use and delay granularity
+            if (running)
+            {
+                return;
+            }
+
+            // if no current work object, start at the start of the list
+            if (current == nullptr)
+            {
+                current = first;
+            }
+
+            // if there is a current work item
+            if (current != nullptr)
+            {
+
+                // run it
+                running = true;
+                current->base_work();
+                running = false;
+
+                // next time round, it is the turn of the next work item in the list
+                current = current->next;
+            }
+        }
+
+    protected:
+
+        virtual void base_work() = 0;
+
+    };
+
+    class background : public background_base
+    {
+    private:
+
+        void base_work() override
+        {
+            work();
+        }
+
+
+    public:
+        /// background work function
+        ///
+        /// This function will be called to do backround work for its class.
+        virtual void work() = 0;
+
+    };
 
 // cyclic dependency...
-uint_fast64_t now_us();
+    uint_fast64_t now_us();
 
-class periodic : public background_base {
-private:    
+    class periodic : public background_base
+    {
+    private:
 
-   const uint_fast64_t period;
-   uint_fast64_t next_moment;
-   
-private:
+        const uint_fast64_t period;
+        uint_fast64_t next_moment;
 
-   void base_work() override {
-      auto now = now_us();       
-      if( now > next_moment ){
-          next_moment += period;
-          work();
-      }    
-   }
+    private:
 
-    
-public:    
+        void base_work() override
+        {
+            auto now = now_us();
+            if (now > next_moment)
+            {
+                next_moment += period;
+                work();
+            }
+        }
 
-   periodic( uint_fast64_t period ):
-      period( period ), next_moment( now_us() )
-   {}
-    
-   /// background work function
-   ///
-   /// This function will be called to do backround work for its class.
-   virtual void work() = 0;           
-   
-};
+
+    public:
+
+        periodic(uint_fast64_t period) :
+                period(period), next_moment(now_us())
+        {
+        }
+
+        /// background work function
+        ///
+        /// This function will be called to do backround work for its class.
+        virtual void work() = 0;
+
+    };
 
 // ===========================================================================
 //
@@ -184,9 +201,9 @@ public:
 
 #ifdef _HWLIB_ONCE
 
-background_base * background_base::first   = nullptr;
-background_base * background_base::current = nullptr;
-bool              background_base::running = false;
+    background_base* background_base::first = nullptr;
+    background_base* background_base::current = nullptr;
+    bool              background_base::running = false;
 
 #endif // #ifdef _HWLIB_ONCE
 

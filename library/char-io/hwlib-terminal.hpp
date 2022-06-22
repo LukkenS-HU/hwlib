@@ -15,7 +15,8 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 /// terminal interface
 /// 
@@ -40,126 +41,150 @@ namespace hwlib {
 ///
 /// \image html terminal-positions.png
 ///
-class terminal : public ostream {
-private:
+    class terminal : public ostream
+    {
+    private:
 
-   uint_fast8_t goto_state;
+        uint_fast8_t goto_state;
 
-protected:
+    protected:
 
-   /// the actual writing of a character
-   /// 
-   /// When this function is called, the the current cursor is
-   /// guaranteed to be within the terminal, and the character is
-   /// not one of the special characters (\\n, \\r, \\c)
-   virtual void putc_implementation( char c ) = 0;
+        /// the actual writing of a character
+        ///
+        /// When this function is called, the the current cursor is
+        /// guaranteed to be within the terminal, and the character is
+        /// not one of the special characters (\\n, \\r, \\c)
+        virtual void putc_implementation(char c) = 0;
 
-   /// change the write location 
-   /// 
-   /// This function is called when the write location is
-   /// changed *except* when it is changed to the next x
-   /// position by a call to putc_implementation.
-   ///
-   /// The default implementation does nothing.
-   virtual void cursor_set_implementation( xy target ){}
+        /// change the write location
+        ///
+        /// This function is called when the write location is
+        /// changed *except* when it is changed to the next x
+        /// position by a call to putc_implementation.
+        ///
+        /// The default implementation does nothing.
+        virtual void cursor_set_implementation(xy target)
+        {
+        }
 
-   /// The default implementation of flush does nothing.
-   virtual void flush(){}
+        /// The default implementation of flush does nothing.
+        virtual void flush()
+        {
+        }
 
-public:
+    public:
 
-   /// the size of the terminal in characters in x and y direction
-   const xy size;
-   
-   /// the current cursor location
-   ///
-   /// Don't write to this attribute, use cursor_set().
-   xy cursor;
+        /// the size of the terminal in characters in x and y direction
+        const xy size;
 
-   /// construct a terminal from its size in characters in x and y direction
-   terminal( xy size ): size( size ){}
+        /// the current cursor location
+        ///
+        /// Don't write to this attribute, use cursor_set().
+        xy cursor;
 
-   /// put the cursor (write location) at x, y
-   virtual void cursor_set( xy target ){
-      cursor = target;
-      cursor_set_implementation( target );
-   }
+        /// construct a terminal from its size in characters in x and y direction
+        terminal(xy size) : size(size)
+        {
+        }
 
-   /// write a single character
-   void putc( char c ){
-      
-      //WLIB_TRACE << c << " " << x <<  " " << y << " " << goto_xy_state;
+        /// put the cursor (write location) at x, y
+        virtual void cursor_set(xy target)
+        {
+            cursor = target;
+            cursor_set_implementation(target);
+        }
 
-      switch( goto_state ){
+        /// write a single character
+        void putc(char c)
+        {
 
-         case 0 :
-            break;
+            //WLIB_TRACE << c << " " << x <<  " " << y << " " << goto_xy_state;
 
-         case 1 :
-            cursor.x = 10 * ( c - '0' );
-            ++goto_state;
-            return;
+            switch (goto_state)
+            {
 
-         case 2 :
-            cursor.x += c - '0' ;
-            ++goto_state;
-            return;
+            case 0 :
+                break;
 
-         case 3 :
-            cursor.y = 10 * ( c - '0' );
-            ++goto_state;
-            return;
+            case 1 :
+                cursor.x = 10 * (c - '0');
+                ++goto_state;
+                return;
 
-         case 4 :
-            cursor.y += c - '0' ;
-            goto_state = 0;
-            cursor_set( cursor );
-            return;
+            case 2 :
+                cursor.x += c - '0';
+                ++goto_state;
+                return;
 
-      }
+            case 3 :
+                cursor.y = 10 * (c - '0');
+                ++goto_state;
+                return;
 
-      if( c == '\n' ){
-         cursor_set( xy( 0, cursor.y + 1 ) );
+            case 4 :
+                cursor.y += c - '0';
+                goto_state = 0;
+                cursor_set(cursor);
+                return;
 
-      } else if( c == '\r' ){
-         cursor_set( xy( 0, cursor.y ) );
+            }
 
-      } else if( c == '\v' ){
-         cursor_set( xy( 0, 0 ) );
+            if (c == '\n')
+            {
+                cursor_set(xy(0, cursor.y + 1));
 
-      } else if( c == '\f' ){
-         clear();
+            }
+            else if (c == '\r')
+            {
+                cursor_set(xy(0, cursor.y));
 
-      } else if( c == '\t' ){
-         goto_state = 1;
+            }
+            else if (c == '\v')
+            {
+                cursor_set(xy(0, 0));
 
-      } else if(
-         ( cursor.x >= 0 )
-         && ( cursor.x < size.x )
-         && ( cursor.y >= 0 )
-         && ( cursor.y < size.y )
-      ){
-          putc_implementation( c );
-          ++cursor.x;
-      }
-   }
+            }
+            else if (c == '\f')
+            {
+                clear();
 
-   /// clear the terminal
-   /// 
-   /// This function clears the terminal and puts the cursor at (0,0).
-   /// The default implementation does this by writing spaces to all
-   /// locations. A concrete implementation might provide
-   /// a better (faster) way.
-   virtual void clear(){
-      for( int_fast16_t y = 0; y < size.y; ++y ){
-         cursor_set( xy( 0, y ) );
-         for( int_fast16_t x = 0; x < size.x; ++x ){
-            putc( ' ' );
-         }
-      }
-      cursor_set( xy( 0, 0 ) ) ;
-   }
-   
-}; // class terminal
+            }
+            else if (c == '\t')
+            {
+                goto_state = 1;
+
+            }
+            else if (
+                    (cursor.x >= 0)
+                    && (cursor.x < size.x)
+                    && (cursor.y >= 0)
+                    && (cursor.y < size.y)
+                    )
+            {
+                putc_implementation(c);
+                ++cursor.x;
+            }
+        }
+
+        /// clear the terminal
+        ///
+        /// This function clears the terminal and puts the cursor at (0,0).
+        /// The default implementation does this by writing spaces to all
+        /// locations. A concrete implementation might provide
+        /// a better (faster) way.
+        virtual void clear()
+        {
+            for (int_fast16_t y = 0; y < size.y; ++y)
+            {
+                cursor_set(xy(0, y));
+                for (int_fast16_t x = 0; x < size.x; ++x)
+                {
+                    putc(' ');
+                }
+            }
+            cursor_set(xy(0, 0));
+        }
+
+    }; // class terminal
 
 }; // namespace hwlib

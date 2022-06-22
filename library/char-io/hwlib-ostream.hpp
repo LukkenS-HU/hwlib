@@ -17,7 +17,8 @@
 
 #include <string>
 
-namespace hwlib {
+namespace hwlib
+{
 
 /// end-of-line constant
     constexpr char endl = '\n';
@@ -32,7 +33,8 @@ namespace hwlib {
 // ==========================================================================
 
 /// ostream output field width manipulator
-    struct setw {
+    struct setw
+    {
 
         /// \cond INTERNAL
         const uint_fast16_t x;
@@ -50,73 +52,84 @@ namespace hwlib {
         /// resets to its initial value of 0.
         ///
         /// The same effect can be achieved by calling stream.setw(N).
-        constexpr setw( uint_fast16_t x ) : x( x ){}
+        constexpr setw(uint_fast16_t x) : x(x)
+        {
+        }
 
     };
 
-    struct _setbase {
+    struct _setbase
+    {
 
         /// \cond INTERNAL
         const uint_fast16_t x;
         /// \endcond
 
-        constexpr _setbase( uint_fast16_t x ) : x( x ){}
+        constexpr _setbase(uint_fast16_t x) : x(x)
+        {
+        }
     };
 
 /// set ostream radix to 2
 ///
 /// When this manipulator is written to an ostream the base for
 /// printing numbers is set to 2 (binary).
-    constexpr _setbase bin( 2 );
+    constexpr _setbase bin(2);
 
 /// set ostream radix to 8
 ///
 /// When this manipulator is written to an ostream the base for
 /// printing numbers is set to 8 (octal).
-    constexpr _setbase oct( 8 );
+    constexpr _setbase oct(8);
 
 /// set ostream radix to 10
 ///
 /// When this manipulator is written to an ostream the base for
 /// printing numbers is set to 10 (decimal).
 /// This is the inital situation.
-    constexpr _setbase dec( 10 );
+    constexpr _setbase dec(10);
 
 /// set ostream radix to 16
 ///
 /// When this manipulator is written to an ostream the base for
 /// printing numbers is set to 16 (hexadecimal).
-    constexpr _setbase hex( 16 );
+    constexpr _setbase hex(16);
 
-    struct _showpos {
+    struct _showpos
+    {
 
         /// \cond INTERNAL
         const bool x;
         /// \endcond
 
-        constexpr _showpos( bool x ) : x( x ){}
+        constexpr _showpos(bool x) : x(x)
+        {
+        }
     };
 
 /// enable printing of a leading '+'
 ///
 /// When this manipulator is written to an ostream the a leading
 /// '+' will be printed when a positive value is printed.  
-    constexpr _showpos showpos( true );
+    constexpr _showpos showpos(true);
 
 /// disable printing of a leading '+'
 ///
 /// When this manipulator is written to an ostream the a leading
 /// '+' will be printed when a positive value is printed.  
 /// This is the initial situation.
-    constexpr _showpos noshowpos( false );
+    constexpr _showpos noshowpos(false);
 
-    struct _showbase {
+    struct _showbase
+    {
 
         /// \cond INTERNAL
         const bool x;
         /// \endcond
 
-        constexpr _showbase( bool x ) : x( x ){}
+        constexpr _showbase(bool x) : x(x)
+        {
+        }
     };
 
 /// enable printing of a leading radix indication
@@ -124,22 +137,25 @@ namespace hwlib {
 /// When this manipulator is written to an ostream a leading
 /// radix indication (0b, 0d, 0o, 0x) will be printed 
 /// when a integer value is printed.  
-    constexpr _showbase showbase( true );
+    constexpr _showbase showbase(true);
 
 /// enable printing of a leading radix indication
 ///
 /// When this manipulator is written to an ostream no a leading
 /// radix indication will be printed when a integer value is printed.   
 /// This is the initial situation.
-    constexpr _showbase noshowbase( false );
+    constexpr _showbase noshowbase(false);
 
-    struct _boolalpha {
+    struct _boolalpha
+    {
 
         /// \cond INTERNAL
         const bool x;
         /// \endcond
 
-        constexpr _boolalpha( bool x ) : x( x ){}
+        constexpr _boolalpha(bool x) : x(x)
+        {
+        }
     };
 
 /// print a bool value as '0' or '1'
@@ -147,17 +163,18 @@ namespace hwlib {
 /// When this manipulator is written to an ostream subsequent boolean
 /// values will be written as '0' or '1'.  
 /// This is the initial situation.           
-    constexpr _boolalpha boolalpha( true );
+    constexpr _boolalpha boolalpha(true);
 
 /// print a bool value as 'false' or 'true'
 ///
 /// When this manipulator is written to an ostream subsequent boolean
 /// values will be written as 'false' or 'true'.  
 /// This is the initial situation.           
-    constexpr _boolalpha noboolalpha( false );
+    constexpr _boolalpha noboolalpha(false);
 
 /// ostream filler character manipulator
-    struct setfill {
+    struct setfill
+    {
 
         /// \cond INTERNAL
         const char x;
@@ -170,11 +187,16 @@ namespace hwlib {
         /// than the current field width.
         ///
         /// The same effect can be achieved by calling stream.setfill(C).
-        constexpr setfill( char x ) : x( x ){}
+        constexpr setfill(char x) : x(x)
+        {
+        }
     };
 
-    struct _right {
-        constexpr _right(){}
+    struct _right
+    {
+        constexpr _right()
+        {
+        }
     };
 
 /// align an item right in its field
@@ -185,8 +207,11 @@ namespace hwlib {
 /// This is the initial situation.                      
     constexpr _right right;
 
-    struct _left {
-        constexpr _left(){}
+    struct _left
+    {
+        constexpr _left()
+        {
+        }
     };
 
 /// align an item left in its field
@@ -196,8 +221,11 @@ namespace hwlib {
 /// left (filled out at the right) in their field width.                     
     constexpr _left left;
 
-    struct _flush {
-        constexpr _flush( void ){}
+    struct _flush
+    {
+        constexpr _flush(void)
+        {
+        }
     };
 
 /// flush an stream
@@ -221,7 +249,8 @@ namespace hwlib {
 /// 
 /// This class is abstract: a concrete subclass 
 /// must implement putc() and flush().
-    class ostream : public noncopyable {
+    class ostream : public noncopyable
+    {
     private:
 
         uint_fast16_t field_width;
@@ -233,9 +262,11 @@ namespace hwlib {
         bool bool_alpha;
         bool show_base;
 
-        static size_t strlen( const char *s ){
+        static size_t strlen(const char* s)
+        {
             size_t n = 0;
-            while( *s != '\0' ){
+            while (*s != '\0')
+            {
                 n++;
                 s++;
             }
@@ -243,8 +274,10 @@ namespace hwlib {
         }
 
         // must handle negative numbers!
-        void filler( int_fast16_t n ){
-            while( n-- > 0 ){
+        void filler(int_fast16_t n)
+        {
+            while (n-- > 0)
+            {
                 *this << fill_char;
             }
         }
@@ -257,66 +290,87 @@ namespace hwlib {
         //
         // =======================================================================
 
-        struct reverse {
+        struct reverse
+        {
             static constexpr uint_fast16_t length = 70;
-            char body[ length ];
-            char *content;
+            char body[length];
+            char* content;
 
-            reverse(){
-                body[ length - 1 ] = '\0';
-                content = & body[ length - 1 ];
+            reverse()
+            {
+                body[length - 1] = '\0';
+                content = &body[length - 1];
             }
 
-            void add_char( char c ){
+            void add_char(char c)
+            {
                 content--;
                 *content = c;
             }
 
-            void add_digit( char c, char hex_base ){
-                if( c > 9 ){
-                    c += ( hex_base - 10 );
-                } else {
+            void add_digit(char c, char hex_base)
+            {
+                if (c > 9)
+                {
+                    c += (hex_base - 10);
+                }
+                else
+                {
                     c += '0';
                 }
-                add_char( c );
+                add_char(c);
             }
 
-            void add_prefix( const ostream & s ){
-                if( s.show_base ){
-                    switch( s.numerical_radix ){
-                    case 2  : add_char( 'b' ); break;
-                    case 8  : add_char( 'o' ); break;
-                    case 10 : return;
-                    case 16 : add_char( 'x' ); break;
-                    default : add_char( '?' ); break;
+            void add_prefix(const ostream& s)
+            {
+                if (s.show_base)
+                {
+                    switch (s.numerical_radix)
+                    {
+                    case 2  :
+                        add_char('b');
+                        break;
+                    case 8  :
+                        add_char('o');
+                        break;
+                    case 10 :
+                        return;
+                    case 16 :
+                        add_char('x');
+                        break;
+                    default :
+                        add_char('?');
+                        break;
                     }
-                    add_char( '0' );
+                    add_char('0');
                 }
             }
         };
 
     public:
 
-        constexpr ostream():
-                field_width( 0 ),
-                numerical_radix( 10 ),
-                fill_char( ' ' ),
-                hex_base( 'A' ),
-                align_right( true ),
-                show_pos( false ),
-                bool_alpha( false ),
-                show_base( false )
-        {}
+        constexpr ostream() :
+                field_width(0),
+                numerical_radix(10),
+                fill_char(' '),
+                hex_base('A'),
+                align_right(true),
+                show_pos(false),
+                bool_alpha(false),
+                show_base(false)
+        {
+        }
 
         /// char output function
         ///
         /// This function is called by the other functions to output
         /// each character.
-        virtual void putc( char c ) = 0;
+        virtual void putc(char c) = 0;
 
         /// char output operator
-        ostream & operator<< ( char c ){
-            putc( c );
+        ostream& operator<<(char c)
+        {
+            putc(c);
             return *this;
         }
 
@@ -326,10 +380,11 @@ namespace hwlib {
         /// to whatever is their destination.
         ///
         /// Writing the flush constant has the same effect as calling flush().
-        virtual void flush( void ) = 0;
+        virtual void flush(void) = 0;
 
         /// \cond INTERNAL
-        friend ostream & operator<< ( ostream & stream, const _flush x ){
+        friend ostream& operator<<(ostream& stream, const _flush x)
+        {
             stream.flush();
             return stream;
         }
@@ -343,118 +398,158 @@ namespace hwlib {
         // =======================================================================
 
         /// return the current field width
-        uint_fast16_t width( void ) const { return field_width; }
+        uint_fast16_t width(void) const
+        {
+            return field_width;
+        }
 
         /// set the field width, return the old field width
-        uint_fast16_t width( uint_fast16_t x ) {
+        uint_fast16_t width(uint_fast16_t x)
+        {
             auto temp = field_width;
             field_width = x;
             return temp;
         }
 
         /// \cond INTERNAL
-        friend ostream & operator<< ( ostream & stream, const setw & x ){
-            stream.width( x.x );
+        friend ostream& operator<<(ostream& stream, const setw& x)
+        {
+            stream.width(x.x);
             return stream;
         }
         /// \endcond
 
         /// return the numerical radix
-        uint_fast16_t base( void ) const { return numerical_radix; }
+        uint_fast16_t base(void) const
+        {
+            return numerical_radix;
+        }
 
         /// set the numerical radix, return the old numerical radix
-        uint_fast16_t base( uint_fast16_t x ) {
+        uint_fast16_t base(uint_fast16_t x)
+        {
             auto temp = numerical_radix;
             numerical_radix = x;
             return temp;
         }
 
         /// \cond INTERNAL
-        friend ostream & operator<< ( ostream & stream, const _setbase & x ){
+        friend ostream& operator<<(ostream& stream, const _setbase& x)
+        {
             stream.numerical_radix = x.x;
             return stream;
         }
         /// \endcond
 
         /// return the current showpos setting
-        bool showpos( void ) const { return show_pos; }
+        bool showpos(void) const
+        {
+            return show_pos;
+        }
 
         /// set the showpos setting, return the old showpos setting
-        bool showpos( bool x ) {
+        bool showpos(bool x)
+        {
             bool temp = show_pos;
             show_pos = x;
             return temp;
         }
 
         /// \cond INTERNAL
-        friend ostream & operator<< ( ostream & stream, const _showpos & x ){
+        friend ostream& operator<<(ostream& stream, const _showpos& x)
+        {
             stream.show_pos = x.x;
             return stream;
         }
         /// \endcond
 
         /// return the current showbase setting        e
-        bool showbase( void ) const { return show_base; }
+        bool showbase(void) const
+        {
+            return show_base;
+        }
 
         /// set the showbase setting, return the old showbase setting
-        bool showbase( bool x ){
+        bool showbase(bool x)
+        {
             bool temp = show_base;
             show_base = x;
             return temp;
         }
 
         /// \cond INTERNAL
-        friend ostream & operator<< ( ostream & stream, const _showbase & x ){
+        friend ostream& operator<<(ostream& stream, const _showbase& x)
+        {
             stream.show_base = x.x;
             return stream;
         }
         /// \endcond
 
         /// return the current boolalpha setting
-        bool boolalpha( void ) const { return bool_alpha; }
+        bool boolalpha(void) const
+        {
+            return bool_alpha;
+        }
 
         /// set the noboolalpha setting, return the old noboolalpha setting
-        bool boolalpha( bool x ) {
+        bool boolalpha(bool x)
+        {
             bool temp = bool_alpha;
             bool_alpha = x;
             return temp;
         }
 
         /// \cond INTERNAL
-        friend ostream & operator<< ( ostream & stream, const _boolalpha & x ){
+        friend ostream& operator<<(ostream& stream, const _boolalpha& x)
+        {
             stream.bool_alpha = x.x;
             return stream;
         }
         /// \endcond
 
         /// return the current fill char setting
-        char fill( void ) const { return fill_char; }
+        char fill(void) const
+        {
+            return fill_char;
+        }
 
         /// set the fill char setting, return the old fill char setting
-        char fill( char x ){
+        char fill(char x)
+        {
             char temp = fill_char;
             fill_char = x;
             return temp;
         }
 
         /// \cond INTERNAL
-        friend ostream & operator<< ( ostream & stream, const setfill x ){
+        friend ostream& operator<<(ostream& stream, const setfill x)
+        {
             stream.fill_char = x.x;
             return stream;
         }
         /// \endcond
 
         /// \cond INTERNAL
-        void right( void ){ align_right = true; }
-        friend ostream & operator<< ( ostream & stream, const _right x ){
+        void right(void)
+        {
+            align_right = true;
+        }
+
+        friend ostream& operator<<(ostream& stream, const _right x)
+        {
             stream.align_right = true;
             return stream;
         }
         /// \endcond
 
         /// \cond INTERNAL
-        void left( void ){ align_right = false; }
-        friend ostream & operator<< ( ostream & stream, const _left x ){
+        void left(void)
+        {
+            align_right = false;
+        }
+
+        friend ostream& operator<<(ostream& stream, const _left x)
+        {
             stream.align_right = false;
             return stream;
         }
@@ -470,33 +565,41 @@ namespace hwlib {
         // =======================================================================
 
         /// output operator for bool
-        friend ostream & operator<< ( ostream & stream, bool x ){
-            if( stream.boolalpha()){
-                stream << ( x ? "true" : "false" );
-            } else {
-                stream << ( x ? "1" : "0" );
+        friend ostream& operator<<(ostream& stream, bool x)
+        {
+            if (stream.boolalpha())
+            {
+                stream << (x ? "true" : "false");
+            }
+            else
+            {
+                stream << (x ? "1" : "0");
             }
             return stream;
         }
 
         /// output operator for const char pointer (literal string)
-        friend ostream & operator<< ( ostream & stream, const char *s ){
-            if( stream.align_right ){
-                stream.filler( static_cast< int_fast16_t >(
-                                       stream.width()) - strlen( s ));
+        friend ostream& operator<<(ostream& stream, const char* s)
+        {
+            if (stream.align_right)
+            {
+                stream.filler(static_cast< int_fast16_t >(
+                                      stream.width()) - strlen(s));
             }
-            for( const char *p = s; *p != '\0'; p++ ){
+            for (const char* p = s; *p != '\0'; p++)
+            {
                 stream << *p;
             }
-            if( ! stream.align_right ){
-                stream.filler( static_cast< int_fast16_t >(
-                                       stream.width()) - strlen( s ));
+            if (!stream.align_right)
+            {
+                stream.filler(static_cast< int_fast16_t >(
+                                      stream.width()) - strlen(s));
             }
-            stream.width( 0 );
+            stream.width(0);
             return stream;
         }
 
-        friend ostream & operator<< ( ostream & stream, const std::string &str )
+        friend ostream& operator<<(ostream& stream, const std::string& str)
         {
             return stream << str.c_str();
         }
@@ -509,25 +612,32 @@ namespace hwlib {
         // =======================================================================
 
         /// output operator for integer
-        friend ostream & operator<< ( ostream & stream, int x ){
+        friend ostream& operator<<(ostream& stream, int x)
+        {
             reverse s;
 
-            bool minus = ( x < 0 );
-            if( x < 0 ){ x = -x; }
+            bool minus = (x < 0);
+            if (x < 0)
+            { x = -x; }
 
-            if( x == 0 ){
-                s.add_digit( 0, stream.hex_base );
+            if (x == 0)
+            {
+                s.add_digit(0, stream.hex_base);
             }
-            while( x > 0 ){
-                s.add_digit( x % stream.base(), stream.hex_base );
+            while (x > 0)
+            {
+                s.add_digit(x % stream.base(), stream.hex_base);
                 x = x / stream.base();
             }
-            s.add_prefix( stream );
+            s.add_prefix(stream);
 
-            if( minus ){
-                s.add_char( '-' );
-            } else if( stream.showpos() ){
-                s.add_char( '+' );
+            if (minus)
+            {
+                s.add_char('-');
+            }
+            else if (stream.showpos())
+            {
+                s.add_char('+');
             }
 
             stream << s.content;
@@ -535,35 +645,44 @@ namespace hwlib {
         }
 
         /// output operator for short integer
-        friend ostream & operator<< ( ostream & stream, short int x ){
+        friend ostream& operator<<(ostream& stream, short int x)
+        {
             return stream << static_cast< int >( x );
         }
 
         /// output operator for long integer
-        friend ostream & operator<< ( ostream & stream, long int x ){
+        friend ostream& operator<<(ostream& stream, long int x)
+        {
             return stream << static_cast< int >( x );
         }
 
         /// output operator for long long integer
-        friend ostream & operator<< ( ostream & stream, long long int x ){
+        friend ostream& operator<<(ostream& stream, long long int x)
+        {
             reverse s;
 
-            bool minus = ( x < 0 );
-            if( x < 0 ){ x = -x; }
+            bool minus = (x < 0);
+            if (x < 0)
+            { x = -x; }
 
-            if( x == 0 ){
-                s.add_digit( 0, stream.hex_base );
+            if (x == 0)
+            {
+                s.add_digit(0, stream.hex_base);
             }
-            while( x != 0 ){
-                s.add_digit( x % stream.base(), stream.hex_base );
+            while (x != 0)
+            {
+                s.add_digit(x % stream.base(), stream.hex_base);
                 x = x / stream.base();
             }
-            s.add_prefix( stream );
+            s.add_prefix(stream);
 
-            if( minus ){
-                s.add_char( '-' );
-            } else if( stream.showpos() ){
-                s.add_char( '+' );
+            if (minus)
+            {
+                s.add_char('-');
+            }
+            else if (stream.showpos())
+            {
+                s.add_char('+');
             }
 
             stream << s.content;
@@ -571,34 +690,40 @@ namespace hwlib {
         }
 
         /// output operator for short unsigned integer
-        friend ostream & operator<< ( ostream & stream, short unsigned int x ){
+        friend ostream& operator<<(ostream& stream, short unsigned int x)
+        {
             return stream << static_cast< long long int >( x );
         }
 
         /// output operator for unsigned integer
-        friend ostream & operator<< ( ostream & stream, unsigned int x ){
+        friend ostream& operator<<(ostream& stream, unsigned int x)
+        {
             return stream << static_cast< long long int >( x );
         }
 
         /// output operator for unsigned long integer
-        friend ostream & operator<< ( ostream & stream, unsigned long int x ){
+        friend ostream& operator<<(ostream& stream, unsigned long int x)
+        {
             return stream << static_cast< long long int >( x );
         }
 
         /// output operator for unsigned long long integer
-        friend ostream & operator<< ( ostream & stream, unsigned long long x ){
+        friend ostream& operator<<(ostream& stream, unsigned long long x)
+        {
             return stream << static_cast< long long int >( x );
         }
 
         /// output operator for signed char (prints as integer)
-        friend ostream & operator<< ( ostream & stream, signed char c ){
+        friend ostream& operator<<(ostream& stream, signed char c)
+        {
             return stream << static_cast< int >( c );
             //stream.putc( c );
             //return stream;
         }
 
         /// output operator for unsigned char (prints as integer)
-        friend ostream & operator<< ( ostream & stream, unsigned char c ){
+        friend ostream& operator<<(ostream& stream, unsigned char c)
+        {
             return stream << static_cast< int >( c );
             //stream.putc( c );
             //return stream;

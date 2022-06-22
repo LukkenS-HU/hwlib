@@ -15,7 +15,8 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 
 // ==========================================================================
@@ -30,75 +31,88 @@ namespace hwlib {
 /// It is used for instance for the size of a graphics or character screen,
 /// and to identify a single pixel location,
 /// or the distance between two pixel locations.
-class xy final {
-public:
+    class xy final
+    {
+    public:
 
-   using value_t = int_fast16_t;
+        using value_t = int_fast16_t;
 
-   /// x value of the pair
-   int_fast16_t x;
-   
-   /// y value of the pair
-   int_fast16_t y;
-   
-   /// construct from its x and y values
-   constexpr xy( int_fast16_t x, int_fast16_t y ): x{ x }, y{ y }{}
-   
-   /// default constructor, zero's the x and y
-   constexpr xy():x{0}, y{0}{}
+        /// x value of the pair
+        int_fast16_t x;
 
-   /// add two 
-   constexpr xy operator+( const xy rhs ) const {
-      return xy{ 
-          static_cast< int_fast16_t >( x + rhs.x ),
-          static_cast< int_fast16_t >( y + rhs.y )
-      };      
-   }      
-   
-   /// subtract two 
-   constexpr xy operator-( const xy rhs ) const {
-      return xy{ 
-          static_cast< int_fast16_t >( x - rhs.x ),
-          static_cast< int_fast16_t >( y - rhs.y )
-      };         
-   }      
+        /// y value of the pair
+        int_fast16_t y;
 
-   /// divide by an integer
-   constexpr xy operator/( const int_fast16_t rhs ) const {
-      return xy{ 
-          static_cast< int_fast16_t >( x / rhs ),
-          static_cast< int_fast16_t >( y / rhs )
-      };         
-   }    
+        /// construct from its x and y values
+        constexpr xy(int_fast16_t x, int_fast16_t y) : x{ x }, y{ y }
+        {
+        }
 
-   /// multiply by an integer
-   constexpr xy operator*( const int_fast16_t rhs ) const {
-      return xy{ 
-          static_cast< int_fast16_t >( x * rhs ),
-          static_cast< int_fast16_t >( y * rhs )
-      };         
-   }    
+        /// default constructor, zero's the x and y
+        constexpr xy() : x{ 0 }, y{ 0 }
+        {
+        }
 
-   /// reverse multiply by an integer
-   friend constexpr xy operator*( int n, const xy & rhs ){
-      return rhs * n;
-   }    
+        /// add two
+        constexpr xy operator+(const xy rhs) const
+        {
+            return xy{
+                    static_cast< int_fast16_t >( x + rhs.x ),
+                    static_cast< int_fast16_t >( y + rhs.y )
+            };
+        }
 
-   /// test whether two xy values are equal
-   constexpr bool operator==( const xy & rhs ) const {
-      return ( x == rhs.x ) && ( y == rhs.y );
-   }
+        /// subtract two
+        constexpr xy operator-(const xy rhs) const
+        {
+            return xy{
+                    static_cast< int_fast16_t >( x - rhs.x ),
+                    static_cast< int_fast16_t >( y - rhs.y )
+            };
+        }
 
-   /// test whether two xy values are unequal
-   constexpr bool operator!=( const xy & rhs ) const {
-      return ! ( *this == rhs );
-   }
-   
-   friend constexpr xy transpose( const xy & rhs ){
-      return xy( rhs.y, rhs.x );      
-   }      
+        /// divide by an integer
+        constexpr xy operator/(const int_fast16_t rhs) const
+        {
+            return xy{
+                    static_cast< int_fast16_t >( x / rhs ),
+                    static_cast< int_fast16_t >( y / rhs )
+            };
+        }
 
-}; 
+        /// multiply by an integer
+        constexpr xy operator*(const int_fast16_t rhs) const
+        {
+            return xy{
+                    static_cast< int_fast16_t >( x * rhs ),
+                    static_cast< int_fast16_t >( y * rhs )
+            };
+        }
+
+        /// reverse multiply by an integer
+        friend constexpr xy operator*(int n, const xy& rhs)
+        {
+            return rhs * n;
+        }
+
+        /// test whether two xy values are equal
+        constexpr bool operator==(const xy& rhs) const
+        {
+            return (x == rhs.x) && (y == rhs.y);
+        }
+
+        /// test whether two xy values are unequal
+        constexpr bool operator!=(const xy& rhs) const
+        {
+            return !(*this == rhs);
+        }
+
+        friend constexpr xy transpose(const xy& rhs)
+        {
+            return xy(rhs.y, rhs.x);
+        }
+
+    };
 
 
 // ==========================================================================
@@ -109,61 +123,72 @@ public:
 
 /// \cond INTERNAL
 
-class xy_iterator_t {
-private:
+    class xy_iterator_t
+    {
+    private:
 
-   xy limits;
-   xy current;
+        xy limits;
+        xy current;
 
-public:
+    public:
 
-   xy_iterator_t( xy limits, xy current ): 
-      limits( limits ), 
-      current( current )
-   {}
+        xy_iterator_t(xy limits, xy current) :
+                limits(limits),
+                current(current)
+        {
+        }
 
-   xy operator*() const {
-      return current;
-   }
+        xy operator*() const
+        {
+            return current;
+        }
 
-   void operator++(){
-      ++current.x;
-      if( current.x == limits.x ){
-         current.x = 0;
-         ++current.y;
-      }
-   }
+        void operator++()
+        {
+            ++current.x;
+            if (current.x == limits.x)
+            {
+                current.x = 0;
+                ++current.y;
+            }
+        }
 
-   bool operator==( const xy_iterator_t rhs ) const {
-      return current == rhs.current;
-   }
+        bool operator==(const xy_iterator_t rhs) const
+        {
+            return current == rhs.current;
+        }
 
-   bool operator!=( const xy_iterator_t rhs ) const {
-      return current != rhs.current;
-   }
-      
-};
+        bool operator!=(const xy_iterator_t rhs) const
+        {
+            return current != rhs.current;
+        }
 
-class xy_all_t {
-private:
+    };
 
-   xy limits;
+    class xy_all_t
+    {
+    private:
 
-public:
+        xy limits;
 
-   xy_all_t( xy limits ):
-      limits( limits )
-   {}
+    public:
 
-   xy_iterator_t begin() const {
-      return xy_iterator_t( limits, xy( 0 , 0 ) );
-   }
+        xy_all_t(xy limits) :
+                limits(limits)
+        {
+        }
 
-   xy_iterator_t end() const {
-      return xy_iterator_t( limits, xy( 0, limits.y ) );
-   }
+        xy_iterator_t begin() const
+        {
+            return xy_iterator_t(limits, xy(0, 0));
+        }
 
-};
+        xy_iterator_t end() const
+        {
+            return xy_iterator_t(limits, xy(0, limits.y));
+        }
+
+    };
 
 /// \endcond 
 
@@ -173,17 +198,18 @@ public:
 /// all values in the range [ 0 ... x-1 ] * [ 0 ... y-1 ].
 ///
 /// \relates xy
-class xy_all_t all( xy v );
+    class xy_all_t all(xy v);
 
 /// print an xy pair
 ///
 /// An xy pair is printed in [x,y] format
 ///
 /// \relates xy
-template< typename T >
-T & operator<<( T & lhs, xy rhs ){
-   return lhs << "[" << rhs.x << ":" << rhs.y << "]";
-}
+    template<typename T>
+    T& operator<<(T& lhs, xy rhs)
+    {
+        return lhs << "[" << rhs.x << ":" << rhs.y << "]";
+    }
 
 
 // ===========================================================================
@@ -194,9 +220,10 @@ T & operator<<( T & lhs, xy rhs ){
 
 #ifdef _HWLIB_ONCE
 
-class xy_all_t all( xy v ){
-   return xy_all_t( v );
-}
+    class xy_all_t all(xy v)
+    {
+        return xy_all_t(v);
+    }
 
 #endif // #ifdef _HWLIB_ONCE
 

@@ -18,19 +18,21 @@
 
 // the STM header files use 'register' in the pre-C++17 sense
 //#define register
-#include "gd32vf103.h" 
+#include "gd32vf103.h"
 //#undef register
 
-namespace gd32vf103xx {
-   
+namespace gd32vf103xx
+{
+
 // the 
 //   - enum class pins
 //   - struct pin_info_type
 //   - pin_info array 
 // must have been declared before this file is included
-   
+
 /// \cond INTERNAL 
-    GPIO_TypeDef &__attribute__((weak)) port_registers(uint32_t port) {
+    GPIO_TypeDef& __attribute__((weak)) port_registers(uint32_t port)
+    {
 
         // a bit of a cludge to put this here:
         // enable the clock to all GPIO ports
@@ -38,44 +40,47 @@ namespace gd32vf103xx {
                 RCC_APB2ENR_IOPAEN | RCC_APB2ENR_IOPBEN |
                 RCC_APB2ENR_IOPCEN | RCC_APB2ENR_IOPDEN;
 
-        switch (port) {
-            case 0  :
-                return *GPIOA;
-            case 1  :
-                return *GPIOB;
-            case 2  :
-                return *GPIOC;
-            case 3  :
-                return *GPIOD;
-            default :
-                break;
+        switch (port)
+        {
+        case 0  :
+            return *GPIOA;
+        case 1  :
+            return *GPIOB;
+        case 2  :
+            return *GPIOC;
+        case 3  :
+            return *GPIOD;
+        default :
+            break;
         }
 
         // doesn't return
         HWLIB_PANIC_WITH_LOCATION;
     }
 
-    class pin_base {
+    class pin_base
+    {
     public:
-        volatile GPIO_TypeDef &port;
-        volatile uint32_t &config_word;
+        volatile GPIO_TypeDef& port;
+        volatile uint32_t& config_word;
         uint32_t pin;
         uint32_t config_offset;
         uint32_t mask;
 
-        void config(uint32_t conf) {
+        void config(uint32_t conf)
+        {
             config_word &= ~(0xF << config_offset);
             config_word |= conf << config_offset;
         }
 
-        pin_base( uint32_t port_number, uint32_t pin_number, uint32_t conf ):
-                port{ port_registers( port_number ) },
-                config_word{ ( pin_number < 8 ) ? port.CRL : port.CRH },
+        pin_base(uint32_t port_number, uint32_t pin_number, uint32_t conf) :
+                port{ port_registers(port_number) },
+                config_word{ (pin_number < 8) ? port.CRL : port.CRH },
                 pin{ pin_number },
                 config_offset{ 4 * (pin_number % 8) },
-                mask{ 0x1U << pin_number } 
+                mask{ 0x1U << pin_number }
         {
-            config( conf );
+            config(conf);
 
 /*            
             // a15 = JTDI pin
@@ -91,13 +96,15 @@ namespace gd32vf103xx {
             }   
  */
 
-       }
+        }
 
-        bool base_read() {
+        bool base_read()
+        {
             return ((port.IDR & mask) != 0);
         }
 
-        void base_write(bool v) {
+        void base_write(bool v)
+        {
             port.BSRR |= (v ? mask : (mask << 16));
         }
 
@@ -106,7 +113,8 @@ namespace gd32vf103xx {
 /// \endcond 
 
 /// pin_in implementation for an stm32f103c8
-    class pin_in : public hwlib::pin_in, private pin_base {
+    class pin_in : public hwlib::pin_in, private pin_base
+    {
     public:
 
         /// stm32f103c8 pin_in constructor
@@ -117,7 +125,9 @@ namespace gd32vf103xx {
         /// This constructor sets the pin direction to input.
         /// By default, the internal weak pull-up is enabled.
         pin_in(uint32_t port_number, uint32_t pin_number) :
-                pin_base{port_number, pin_number, 0x08} {}
+                pin_base{ port_number, pin_number, 0x08 }
+        {
+        }
 
         /// stm32f103c8 pin_in constructor
         ///
@@ -130,19 +140,25 @@ namespace gd32vf103xx {
                 pin_in{
                         pin_info(name).port,
                         pin_info(name).pin
-                } {}
+                }
+        {
+        }
 
-        bool read() override {
+        bool read() override
+        {
             return base_read();
         }
 
-        void refresh() override {}
+        void refresh() override
+        {
+        }
 
 
     };
 
 /// pin_out implementation for an stm32f103c8
-    class pin_out : public hwlib::pin_out, private pin_base {
+    class pin_out : public hwlib::pin_out, private pin_base
+    {
     public:
 
         /// stm32f103c8 pin_out constructor
@@ -156,7 +172,9 @@ namespace gd32vf103xx {
         /// to high or low, the set function must
         /// be called to do so.
         pin_out(uint32_t port_number, uint32_t pin_number) :
-                pin_base{port_number, pin_number, 0x03} {}
+                pin_base{ port_number, pin_number, 0x03 }
+        {
+        }
 
         /// stm32f103c8 pin_out constructor
         ///
@@ -172,18 +190,24 @@ namespace gd32vf103xx {
                 pin_out{
                         pin_info(name).port,
                         pin_info(name).pin
-                } {}
+                }
+        {
+        }
 
-        void write(bool v) override {
+        void write(bool v) override
+        {
             base_write(v);
         }
 
-        void flush() override {}
+        void flush() override
+        {
+        }
 
     };
 
 /// pin_in_out implementation for an stm32f103c8
-    class pin_in_out : public hwlib::pin_in_out, private pin_base {
+    class pin_in_out : public hwlib::pin_in_out, private pin_base
+    {
     public:
 
         /// stm32f103c8 pin_out constructor
@@ -199,7 +223,9 @@ namespace gd32vf103xx {
         /// to high or low, the set function must
         /// be called to do so.
         pin_in_out(uint32_t port_number, uint32_t pin_number) :
-                pin_base{port_number, pin_number, 0x08} {}
+                pin_base{ port_number, pin_number, 0x08 }
+        {
+        }
 
         /// stm32f103c8 pin_out constructor
         ///
@@ -217,29 +243,41 @@ namespace gd32vf103xx {
                 pin_in_out{
                         pin_info(name).port,
                         pin_info(name).pin
-                } {}
+                }
+        {
+        }
 
-        void direction_set_input() override {
+        void direction_set_input() override
+        {
             config(0x08);
         }
 
-        bool read() override {
+        bool read() override
+        {
             return base_read();
         }
 
-        void direction_set_output() override {
+        void direction_set_output() override
+        {
             config(0x03);
         }
 
-        void write(bool v) override {
+        void write(bool v) override
+        {
             base_write(v);
         }
 
-        void flush() override {}
+        void flush() override
+        {
+        }
 
-        void refresh() override {}
+        void refresh() override
+        {
+        }
 
-        void direction_flush() override {}
+        void direction_flush() override
+        {
+        }
 
     };
 
@@ -292,7 +330,8 @@ namespace gd32vf103xx {
 */
 
 /// pin_oc implementation for an stm32f103c8
-    class pin_oc : public hwlib::pin_oc, private pin_base {
+    class pin_oc : public hwlib::pin_oc, private pin_base
+    {
     public:
 
         /// stm32f103c8 pin_oc constructor
@@ -304,7 +343,9 @@ namespace gd32vf103xx {
         /// to high or low, the set function must
         /// be called to do so.
         pin_oc(uint32_t port_number, uint32_t pin_number) :
-                pin_base{port_number, pin_number, 0x07} {}
+                pin_base{ port_number, pin_number, 0x07 }
+        {
+        }
 
         /// stm32f103c8 pin_oc constructor
         ///
@@ -318,29 +359,43 @@ namespace gd32vf103xx {
                 pin_oc{
                         pin_info(name).port,
                         pin_info(name).pin
-                } {}
+                }
+        {
+        }
 
-        bool read() override {
+        bool read() override
+        {
             return base_read();
         }
 
-        void write(bool v) override {
+        void write(bool v) override
+        {
             base_write(v);
         }
 
-        void flush() override {}
+        void flush() override
+        {
+        }
 
-        void refresh() override {}
+        void refresh() override
+        {
+        }
 
     };
 
 /// the number of ticks per us
-    uint_fast64_t HWLIB_WEAK ticks_per_us() {
+    uint_fast64_t HWLIB_WEAK
+
+    ticks_per_us()
+    {
         return 64; //72;
     }
 
 /// returns the number of ticks since some fixed starting point
-    uint_fast64_t HWLIB_WEAK now_ticks() {
+    uint_fast64_t HWLIB_WEAK
+
+    now_ticks()
+    {
 /*
         static bool init_done = false;
         if (!init_done) {
@@ -411,7 +466,7 @@ namespace gd32vf103xx {
         // the counter runs at 1 MHz
         return (low | high);
 */
-return 0;
+        return 0;
     }
 
 /// \cond INTERNAL    
@@ -426,64 +481,64 @@ return 0;
 
 #ifdef _HWLIB_ONCE
 
-/*
-    // If hwlib gets to cpp20 minimum make this consteval.
-    constexpr uint32_t calculateBoutRate(long long  bout) {
-        long long  fck = 64000000; // PCLK2 is getting 64 MHz
-        fck *= 100; //doing fck x100 so we don't get floats.
-        long long  usartdiv = (fck/bout)/16;
-        unsigned int mantissa = std::round(usartdiv/100);
-        unsigned int devider = std::round(((usartdiv-(mantissa*100))*16)/100);
-        uint32_t baudrateReg = mantissa<<4u | devider;
-        return baudrateReg;
-    }
-*/
-    void uart_init() {
-        static bool init_done = false;
-        if (init_done) {
-            return;
+    /*
+        // If hwlib gets to cpp20 minimum make this consteval.
+        constexpr uint32_t calculateBoutRate(long long  bout) {
+            long long  fck = 64000000; // PCLK2 is getting 64 MHz
+            fck *= 100; //doing fck x100 so we don't get floats.
+            long long  usartdiv = (fck/bout)/16;
+            unsigned int mantissa = std::round(usartdiv/100);
+            unsigned int devider = std::round(((usartdiv-(mantissa*100))*16)/100);
+            uint32_t baudrateReg = mantissa<<4u | devider;
+            return baudrateReg;
         }
-        init_done = true;
+    */
+        void uart_init() {
+            static bool init_done = false;
+            if (init_done) {
+                return;
+            }
+            init_done = true;
 
 
-        RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;      // enable GPIOA clock
-        RCC->APB2ENR |= RCC_APB2ENR_USART1EN;    // enable USART1 clock
+            RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;      // enable GPIOA clock
+            RCC->APB2ENR |= RCC_APB2ENR_USART1EN;    // enable USART1 clock
 
-        GPIOA->CRH &= ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9);   // reset PA9
-        GPIOA->CRH &= ~(GPIO_CRH_CNF10 | GPIO_CRH_MODE10);  // reset PA10
+            GPIOA->CRH &= ~(GPIO_CRH_CNF9 | GPIO_CRH_MODE9);   // reset PA9
+            GPIOA->CRH &= ~(GPIO_CRH_CNF10 | GPIO_CRH_MODE10);  // reset PA10
 
-//        GPIOA->CRH |= GPIO_CRH_MODE9_1 | GPIO_CRH_MODE9_0;  // 0b11 50MHz output
-//        GPIOA->CRH |= GPIO_CRH_CNF9_1;    // PA9: output @ 50MHz - Alt-function Push-pull
-//        GPIOA->CRH |= GPIO_CRH_CNF10_0;   // PA10 RX - Mode = 0b00 (input) - CNF = 0b01 (input floating)
-//        USART1->BRR = calculateBoutRate(HWLIB_BAUDRATE);
-        // configure USART1 registers
-//        USART1->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
+    //        GPIOA->CRH |= GPIO_CRH_MODE9_1 | GPIO_CRH_MODE9_0;  // 0b11 50MHz output
+    //        GPIOA->CRH |= GPIO_CRH_CNF9_1;    // PA9: output @ 50MHz - Alt-function Push-pull
+    //        GPIOA->CRH |= GPIO_CRH_CNF10_0;   // PA10 RX - Mode = 0b00 (input) - CNF = 0b01 (input floating)
+    //        USART1->BRR = calculateBoutRate(HWLIB_BAUDRATE);
+            // configure USART1 registers
+    //        USART1->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
 
-    }
-
-
-    bool uart_char_available() {
-        uart_init();
-//        return (USART1->SR & USART_SR_RXNE_Msk);
-return 0;
-    }
-
-    char uart_getc() {
-        // uart_init() is not needed because uart_char_available does that
-        while (!uart_char_available()) {
-            hwlib::background::do_background_work();
         }
-//        return USART1->DR;
-return 0;
-    }
 
-    void uart_putc(char c) {
-        uart_init();
-//        while (!(USART1->SR & USART_SR_TXE_Msk)) {
-//            hwlib::background::do_background_work();
-//        }
-//        USART1->DR = c;
-    }
+
+        bool uart_char_available() {
+            uart_init();
+    //        return (USART1->SR & USART_SR_RXNE_Msk);
+    return 0;
+        }
+
+        char uart_getc() {
+            // uart_init() is not needed because uart_char_available does that
+            while (!uart_char_available()) {
+                hwlib::background::do_background_work();
+            }
+    //        return USART1->DR;
+    return 0;
+        }
+
+        void uart_putc(char c) {
+            uart_init();
+    //        while (!(USART1->SR & USART_SR_TXE_Msk)) {
+    //            hwlib::background::do_background_work();
+    //        }
+    //        USART1->DR = c;
+        }
 
 
 #endif

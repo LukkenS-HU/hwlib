@@ -15,7 +15,8 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 	
 // ==========================================================================
 //
@@ -346,76 +347,97 @@ public:
 ///    - clock stretching by the slave is not supported
 ///    - only a single master is supported
 ///    - the speed is fixed at ~ 100 kHz or somewhat lower
-class i2c_bus_bit_banged_scl_sda : 
-   public i2c_primitives, 
-   public i2c_bus
-{
-private:
+    class i2c_bus_bit_banged_scl_sda :
+            public i2c_primitives,
+            public i2c_bus
+    {
+    private:
 
-   pin_oc & scl, & sda;
-   
-   void wait_half_period(){
-      wait_us( 1 );      
-   }
-   
-   void write_bit( bool x ) override {
-      scl.write( 0 ); scl.flush();
-      wait_half_period();
-      sda.write( x ); sda.flush();
-      scl.write( 1 ); scl.flush();
+        pin_oc& scl, & sda;
 
-      do {
-         wait_half_period();
-      } while( ! scl.read() );
-   }
+        void wait_half_period()
+        {
+            wait_us(1);
+        }
 
-   bool read_bit() override {
-      scl.write( 0 ); scl.flush();
-      sda.write( 1 ); sda.flush();
-      wait_half_period();  
-      scl.write( 1 ); scl.flush();
+        void write_bit(bool x) override
+        {
+            scl.write(0);
+            scl.flush();
+            wait_half_period();
+            sda.write(x);
+            sda.flush();
+            scl.write(1);
+            scl.flush();
 
-      do {
-         wait_half_period();
-      } while( ! scl.read() );
+            do
+            {
+                wait_half_period();
+            } while (!scl.read());
+        }
 
-      sda.refresh();
-      bool result = sda.read();
-      wait_half_period();    
-      return result;
-   }       
-  
-   void write_start() override {
-      sda.write( 0 ); sda.flush();
-      wait_half_period();
-      scl.write( 0 ); scl.flush();
-      wait_half_period(); 
-   }
+        bool read_bit() override
+        {
+            scl.write(0);
+            scl.flush();
+            sda.write(1);
+            sda.flush();
+            wait_half_period();
+            scl.write(1);
+            scl.flush();
 
-   void write_stop() override {
-      scl.write( 0 ); scl.flush();
-      wait_half_period();   
-      sda.write( 0 ); sda.flush();
-      wait_half_period();   
-      scl.write( 1 ); scl.flush();
-      wait_half_period();   
-      sda.write( 1 ); sda.flush();
-      wait_half_period();    
-   }     
-   
-public:
+            do
+            {
+                wait_half_period();
+            } while (!scl.read());
 
-   /// construct a bit-banged I2C bus from the scl and sda pins
-   /// 
-   /// This constructor creates a bit-banged I2C bus master
-   /// from the scl and sda pins.
-   i2c_bus_bit_banged_scl_sda( pin_oc & scl, pin_oc & sda ):
-      i2c_bus( *(i2c_primitives*) this ), scl( scl ), sda( sda )
-   {
-      scl.write( 1 ); scl.flush();
-      sda.write( 1 ); sda.flush();
-   }
-   
-}; // class i2c_bus_bit_banged_scl_sda    
-   
+            sda.refresh();
+            bool result = sda.read();
+            wait_half_period();
+            return result;
+        }
+
+        void write_start() override
+        {
+            sda.write(0);
+            sda.flush();
+            wait_half_period();
+            scl.write(0);
+            scl.flush();
+            wait_half_period();
+        }
+
+        void write_stop() override
+        {
+            scl.write(0);
+            scl.flush();
+            wait_half_period();
+            sda.write(0);
+            sda.flush();
+            wait_half_period();
+            scl.write(1);
+            scl.flush();
+            wait_half_period();
+            sda.write(1);
+            sda.flush();
+            wait_half_period();
+        }
+
+    public:
+
+        /// construct a bit-banged I2C bus from the scl and sda pins
+        ///
+        /// This constructor creates a bit-banged I2C bus master
+        /// from the scl and sda pins.
+        i2c_bus_bit_banged_scl_sda(pin_oc& scl, pin_oc& sda) :
+                i2c_bus(*(i2c_primitives*)this), scl(scl), sda(sda)
+        {
+            scl.write(1);
+            scl.flush();
+            sda.write(1);
+            sda.flush();
+        }
+
+    }; // class i2c_bus_bit_banged_scl_sda
+
 }; // namespace hwlib

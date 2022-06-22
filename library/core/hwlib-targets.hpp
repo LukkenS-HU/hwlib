@@ -15,23 +15,26 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
-enum class target_boards {
-   none,
-   arduino_uno,
-   my_first_dev_board,
-   arduino_due,
-   blue_pill,
-   termite,
-   longan_nano
-};
+    enum class target_boards
+    {
+        none,
+        arduino_uno,
+        my_first_dev_board,
+        arduino_due,
+        blue_pill,
+        termite,
+        longan_nano
+    };
 
-enum class target_chips {
-   atmega328p,
-   atsam3x8e,
-   stm32f103c8,
-   gd32vf103c8
-};
-   
+    enum class target_chips
+    {
+        atmega328p,
+        atsam3x8e,
+        stm32f103c8,
+        gd32vf103c8
+    };
+
 }; // namespace hwlib   

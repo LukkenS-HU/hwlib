@@ -15,9 +15,10 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
-	
-	
+namespace hwlib
+{
+
+
 // ===========================================================================
 //
 // console input & output functions, to be implemented by the targets
@@ -32,8 +33,8 @@ namespace hwlib {
 ///
 /// This definition is weak, which allows 
 /// an application to provide its own definition.
-void uart_putc( char c );
-   
+    void uart_putc(char c);
+
 /// console character input function
 ///
 /// This is the function used for console (istream) input.
@@ -42,8 +43,8 @@ void uart_putc( char c );
 ///
 /// This definition is weak, which allows 
 /// an application to provide its own definition.
-char uart_getc();
-   
+    char uart_getc();
+
 /// console character available check
 ///
 /// This is the function used to check if the console (istream) input
@@ -53,7 +54,7 @@ char uart_getc();
 ///
 /// This definition is weak, which allows 
 /// an application to provide its own definition.
-bool uart_char_available();
+    bool uart_char_available();
 
 
 // ===========================================================================
@@ -61,33 +62,40 @@ bool uart_char_available();
 // the standard input (cin) and output cout, using the console IO functions
 //
 // ===========================================================================
-   
+
 /// \cond INTERNAL 
-   
-class cout_using_uart_putc : public ostream {
-public:    
 
-   void putc( char c ) override {
-      uart_putc( c );
-   }
-   
-   void flush() override {}
+    class cout_using_uart_putc : public ostream
+    {
+    public:
 
-};
-   
-class cin_using_uart_getc : public istream {
-public:    
+        void putc(char c) override
+        {
+            uart_putc(c);
+        }
 
-   bool char_available() override {
-      return uart_char_available();      
-   }   
-   
-   char getc() override {
-      return uart_getc();
-   }
-   
-};
-   
+        void flush() override
+        {
+        }
+
+    };
+
+    class cin_using_uart_getc : public istream
+    {
+    public:
+
+        bool char_available() override
+        {
+            return uart_char_available();
+        }
+
+        char getc() override
+        {
+            return uart_getc();
+        }
+
+    };
+
 /// \endcond    
 
 /// embedded output console
@@ -98,8 +106,8 @@ public:
 ///
 /// This definition is weak, which allows 
 /// an application to provide its own definition.
-extern cout_using_uart_putc cout;   
- 
+    extern cout_using_uart_putc cout;
+
 
 /// embedded input console
 ///
@@ -109,7 +117,7 @@ extern cout_using_uart_putc cout;
 ///
 /// This definition is weak, which allows 
 /// an application to provide its own definition.
-extern cin_using_uart_getc cin;    
+    extern cin_using_uart_getc cin;
 
 
 // ===========================================================================
@@ -118,10 +126,10 @@ extern cin_using_uart_getc cin;
 //
 // ===========================================================================
 
-#ifdef _HWLIB_ONCE   
-   
-cout_using_uart_putc HWLIB_WEAK cout;   
-cin_using_uart_getc HWLIB_WEAK  cin; 
+#ifdef _HWLIB_ONCE
+
+    cout_using_uart_putc HWLIB_WEAK cout;
+    cin_using_uart_getc HWLIB_WEAK cin;
 
 #endif // _HWLIB_ONCE
 

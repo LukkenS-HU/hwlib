@@ -18,9 +18,10 @@
 
 #include HWLIB_INCLUDE( ../hwlib-all.hpp )
 
-namespace hwlib {
-	
-   // this is the 'unknown target' file, so it supports absolutely nothing
+namespace hwlib
+{
+
+    // this is the 'unknown target' file, so it supports absolutely nothing
 
 }; // namespace hwlib
 

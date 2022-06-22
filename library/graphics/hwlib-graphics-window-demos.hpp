@@ -15,7 +15,8 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 /// random lines demo
 /// 
@@ -25,11 +26,11 @@ namespace hwlib {
 /// - draws n random lines (default is 30),
 ///   of the specified color (default is the window foreground)
 /// - waits half a second.
-void graphics_random_lines( 
-   window & w, 
-   uint_fast16_t n = 30,
-   const color & c = unspecified      
-);
+    void graphics_random_lines(
+            window& w,
+            uint_fast16_t n = 30,
+            const color& c = unspecified
+    );
 
 /// random circles demo
 /// 
@@ -40,11 +41,11 @@ void graphics_random_lines(
 ///      (which might be partially out-of-screen),
 ///   of the specified color (default is the window foreground)
 /// - waits half a second.
-void graphics_random_circles( 
-   window & w, 
-   uint_fast16_t n = 30,
-   const color & c = unspecified  
-);
+    void graphics_random_circles(
+            window& w,
+            uint_fast16_t n = 30,
+            const color& c = unspecified
+    );
 
 
 // ===========================================================================
@@ -55,48 +56,54 @@ void graphics_random_circles(
 
 #ifdef _HWLIB_ONCE
 
-void HWLIB_NORETURN graphics_random_lines( 
-   window & w, 
-   uint_fast16_t n_lines,
-   const color & c   
-){
-   for(;;){
-      w.clear();			
-      for( 
-         int_fast16_t n = 0; 
-         n < static_cast< int_fast16_t >( n_lines ); 
-         n++ 
-      ){
-         line( 
-            random_in( w.size ),
-            random_in( w.size ),
-            c
-         ).draw( w );
-         w.flush();			
-         wait_ms( 500 );
-      }
-   }  
-}
+    void HWLIB_NORETURN graphics_random_lines(
+            window& w,
+            uint_fast16_t n_lines,
+            const color& c
+    )
+    {
+        for (;;)
+        {
+            w.clear();
+            for (
+                    int_fast16_t n = 0;
+                    n < static_cast< int_fast16_t >( n_lines );
+                    n++
+                    )
+            {
+                line(
+                        random_in(w.size),
+                        random_in(w.size),
+                        c
+                ).draw(w);
+                w.flush();
+                wait_ms(500);
+            }
+        }
+    }
 
-void HWLIB_NORETURN graphics_random_circles( 
-   window & w, 
-   uint_fast16_t n_circles,
-   const color & c    
-){
-   for(;;){
-      w.clear();
-      w.flush();		  
-      for( uint_fast16_t n = 0; n < n_circles; n++ ){
-         circle( 
-            random_in( w.size ),
-            random_in(  0, w.size.y / 4 ),
-            c
-         ).draw( w );
-         w.flush();
-         wait_ms( 500 );
-      }
-   }  
-}
+    void HWLIB_NORETURN graphics_random_circles(
+            window& w,
+            uint_fast16_t n_circles,
+            const color& c
+    )
+    {
+        for (;;)
+        {
+            w.clear();
+            w.flush();
+            for (uint_fast16_t n = 0; n < n_circles; n++)
+            {
+                circle(
+                        random_in(w.size),
+                        random_in(0, w.size.y / 4),
+                        c
+                ).draw(w);
+                w.flush();
+                wait_ms(500);
+            }
+        }
+    }
 
 #endif // #ifdef _HWLIB_ONCE
 

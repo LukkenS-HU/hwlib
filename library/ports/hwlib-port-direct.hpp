@@ -15,15 +15,16 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
-	
-	
+namespace hwlib
+{
+
+
 // ==========================================================================
 //
 // port_in_out
 //
 // ==========================================================================	
-	
+
 /// a direct-effect port_in_out 
 ///
 /// This is a version of port_in_out where the various operations
@@ -32,50 +33,61 @@ namespace hwlib {
 ///
 /// The preferred way to use this class is through the overloaded 
 /// constructor function direct().
-class port_direct_from_in_out_t : public port_in_out {
-private:
+    class port_direct_from_in_out_t : public port_in_out
+    {
+    private:
 
-   port_in_out & slave;	
-	
-public:
+        port_in_out& slave;
 
-   /// construct from a port_in_out
-   port_direct_from_in_out_t( port_in_out & slave ): slave( slave ){}
-   
-   uint_fast8_t number_of_pins(){
-      return slave.number_of_pins();
-   }	  
-   
-   void write( uint_fast16_t  v ) override {
-      slave.write( v );
-      slave.flush();
-   }
-   
-   uint_fast16_t read() override { 
-      slave.refresh();
-      return slave.read();
-   }
-   
-   void direction_set_input() override {
-      slave.direction_set_input();
-      slave.direction_flush();	  
-   }
-   
-   void direction_set_output() override {
-      slave.direction_set_output();
-      slave.direction_flush();	 
-   }
-   
-   void flush() override {
-   }
-   
-   void refresh() override {  
-   }
-   
-   void direction_flush() override {
-   }
-   
-};  
+    public:
+
+        /// construct from a port_in_out
+        port_direct_from_in_out_t(port_in_out& slave) : slave(slave)
+        {
+        }
+
+        uint_fast8_t number_of_pins()
+        {
+            return slave.number_of_pins();
+        }
+
+        void write(uint_fast16_t v) override
+        {
+            slave.write(v);
+            slave.flush();
+        }
+
+        uint_fast16_t read() override
+        {
+            slave.refresh();
+            return slave.read();
+        }
+
+        void direction_set_input() override
+        {
+            slave.direction_set_input();
+            slave.direction_flush();
+        }
+
+        void direction_set_output() override
+        {
+            slave.direction_set_output();
+            slave.direction_flush();
+        }
+
+        void flush() override
+        {
+        }
+
+        void refresh() override
+        {
+        }
+
+        void direction_flush() override
+        {
+        }
+
+    };
 
 
 // ==========================================================================
@@ -92,29 +104,35 @@ public:
 ///
 /// The preferred way to use this class is through the overloaded 
 /// constructor function direct().
-class port_direct_from_in_t : public port_in {
-private:
+    class port_direct_from_in_t : public port_in
+    {
+    private:
 
-   port_in & slave;	
-	
-public:
+        port_in& slave;
 
-   /// construct from a port_in
-   port_direct_from_in_t( port_in & slave ): slave( slave ){}
-  
-   uint_fast8_t number_of_pins(){
-      return slave.number_of_pins();
-   }	  
-   
-   uint_fast16_t  read() override { 
-      slave.refresh();
-      return slave.read();
-   }
-     
-   void refresh() override {  
-   }
-   
-};  
+    public:
+
+        /// construct from a port_in
+        port_direct_from_in_t(port_in& slave) : slave(slave)
+        {
+        }
+
+        uint_fast8_t number_of_pins()
+        {
+            return slave.number_of_pins();
+        }
+
+        uint_fast16_t read() override
+        {
+            slave.refresh();
+            return slave.read();
+        }
+
+        void refresh() override
+        {
+        }
+
+    };
 
 
 // ==========================================================================
@@ -131,29 +149,35 @@ public:
 ///
 /// The preferred way to use this class is through the overloaded 
 /// constructor function direct().
-class port_direct_from_out_t : public port_out {
-private:
+    class port_direct_from_out_t : public port_out
+    {
+    private:
 
-   port_out & slave;	
-	
-public:
+        port_out& slave;
 
-   /// construct from a port_out
-   port_direct_from_out_t( port_out & slave ): slave( slave ){}
+    public:
 
-   uint_fast8_t number_of_pins(){
-      return slave.number_of_pins();
-   }	  
-   
-   void write( uint_fast16_t  v ) override {
-      slave.write( v );
-	  slave.flush();
-   }
-      
-   void flush() override {
-   }
-   
-};  
+        /// construct from a port_out
+        port_direct_from_out_t(port_out& slave) : slave(slave)
+        {
+        }
+
+        uint_fast8_t number_of_pins()
+        {
+            return slave.number_of_pins();
+        }
+
+        void write(uint_fast16_t v) override
+        {
+            slave.write(v);
+            slave.flush();
+        }
+
+        void flush() override
+        {
+        }
+
+    };
 
 
 // ==========================================================================
@@ -170,37 +194,45 @@ public:
 ///
 /// The preferred way to use this class is through the overloaded 
 /// constructor function direct().
-class port_direct_from_oc_t : public port_oc {
-private:
+    class port_direct_from_oc_t : public port_oc
+    {
+    private:
 
-   port_oc & slave;	
-	
-public:
+        port_oc& slave;
 
-   /// construct from a port_oc
-   port_direct_from_oc_t( port_oc & slave ): slave( slave ){}
+    public:
 
-   uint_fast8_t number_of_pins(){
-      return slave.number_of_pins();
-   }	  
-   
-   void write( uint_fast16_t  v ) override {
-      slave.write( v );
-	  slave.flush();
-   }
-   
-   uint_fast16_t read() override { 
-      slave.refresh();
-      return slave.read();
-   }
-      
-   void flush() override {
-   }
-   
-   void refresh() override {  
-   }
-   
-};  
+        /// construct from a port_oc
+        port_direct_from_oc_t(port_oc& slave) : slave(slave)
+        {
+        }
+
+        uint_fast8_t number_of_pins()
+        {
+            return slave.number_of_pins();
+        }
+
+        void write(uint_fast16_t v) override
+        {
+            slave.write(v);
+            slave.flush();
+        }
+
+        uint_fast16_t read() override
+        {
+            slave.refresh();
+            return slave.read();
+        }
+
+        void flush() override
+        {
+        }
+
+        void refresh() override
+        {
+        }
+
+    };
 
 
 // ===========================================================================
@@ -211,10 +243,13 @@ public:
 
 /// return the direct-acting of a port
 ///@{ 
-port_direct_from_oc_t      direct( port_oc & p );
-port_direct_from_in_out_t  direct( port_in_out & p );
-port_direct_from_out_t     direct( port_out & p );
-port_direct_from_in_t      direct( port_in & p );
+    port_direct_from_oc_t direct(port_oc& p);
+
+    port_direct_from_in_out_t direct(port_in_out& p);
+
+    port_direct_from_out_t direct(port_out& p);
+
+    port_direct_from_in_t direct(port_in& p);
 ///@}
 
 
@@ -226,21 +261,25 @@ port_direct_from_in_t      direct( port_in & p );
 
 #ifdef _HWLIB_ONCE
 
-port_direct_from_out_t direct( port_out & p ){
-   return port_direct_from_out_t( p );
-}   
+    port_direct_from_out_t direct(port_out& p)
+    {
+        return port_direct_from_out_t(p);
+    }
 
-port_direct_from_in_t direct( port_in & p ){
-   return port_direct_from_in_t( p );
-}   
+    port_direct_from_in_t direct(port_in& p)
+    {
+        return port_direct_from_in_t(p);
+    }
 
-port_direct_from_in_out_t direct( port_in_out & p ){
-   return port_direct_from_in_out_t( p );
-}   
+    port_direct_from_in_out_t direct(port_in_out& p)
+    {
+        return port_direct_from_in_out_t(p);
+    }
 
-port_direct_from_oc_t direct( port_oc & p ){
-   return port_direct_from_oc_t( p );
-}   
+    port_direct_from_oc_t direct(port_oc& p)
+    {
+        return port_direct_from_oc_t(p);
+    }
 
 #endif // _HWLIB_ONCE
 

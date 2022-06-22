@@ -15,7 +15,8 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 /// scrolling text demo
 /// 
@@ -23,13 +24,13 @@ namespace hwlib {
 /// Thye delays (in ms) are after showing the initial first part 
 /// of the text, after scrolling oen character, 
 /// and after showing the last part of the texr.
-void scrolling_text( 
-   terminal & term, 
-   const char * text, 
-   uint_fast16_t first_ms = 1'000,
-   uint_fast16_t step_ms  = 300,
-   uint_fast16_t last_ms  = 1'000 
-);
+    void scrolling_text(
+            terminal& term,
+            const char* text,
+            uint_fast16_t first_ms = 1'000,
+            uint_fast16_t step_ms = 300,
+            uint_fast16_t last_ms = 1'000
+    );
 
 
 // ===========================================================================
@@ -38,38 +39,44 @@ void scrolling_text(
 //
 // ===========================================================================
 
-#ifdef _HWLIB_ONCE 
+#ifdef _HWLIB_ONCE
 
-uint_fast16_t HWLIB_WEAK strlen( const char * s ){
-   uint_fast16_t n = 0;
-   while( *s != '\0' ){
-      ++s;
-      ++n;
-   }
-   return n;
-}
+    uint_fast16_t HWLIB_WEAK strlen(const char* s)
+    {
+        uint_fast16_t n = 0;
+        while (*s != '\0')
+        {
+            ++s;
+            ++n;
+        }
+        return n;
+    }
 
-void HWLIB_NORETURN scrolling_text( 
-   terminal & term, 
-   const char * text, 
-   uint_fast16_t first_ms,
-   uint_fast16_t step_ms,
-   uint_fast16_t last_ms
-){
-   auto len = strlen( text );
-   
-   for(;;){
-      for( uint_fast16_t i = 0; ( i + term.size.x ) <= len; ++i ){
-         term << '\r';
-         for( int_fast16_t j = 0; j < term.size.x; ++j ){
-			 term << text[ i + j ];
-		 }
-		 term << flush;
-		 wait_ms( i == 0 ? first_ms : step_ms );
-      }		 
-      wait_ms( last_ms );
-   }	   
-}
+    void HWLIB_NORETURN scrolling_text(
+            terminal& term,
+            const char* text,
+            uint_fast16_t first_ms,
+            uint_fast16_t step_ms,
+            uint_fast16_t last_ms
+    )
+    {
+        auto len = strlen(text);
+
+        for (;;)
+        {
+            for (uint_fast16_t i = 0; (i + term.size.x) <= len; ++i)
+            {
+                term << '\r';
+                for (int_fast16_t j = 0; j < term.size.x; ++j)
+                {
+                    term << text[i + j];
+                }
+                term << flush;
+                wait_ms(i == 0 ? first_ms : step_ms);
+            }
+            wait_ms(last_ms);
+        }
+    }
 
 #endif // #ifdef _HWLIB_ONCE
 

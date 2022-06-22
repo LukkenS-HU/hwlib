@@ -15,7 +15,8 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 /// character input interface
 ///
@@ -23,41 +24,50 @@ namespace hwlib {
 /// (as yet, only reading a single character is supported)
 /// 
 /// This class is abstract: a concrete subclass must implement getc().  
-class istream : public noncopyable {     
-public:        
+    class istream : public noncopyable
+    {
+    public:
 
-   /// reports whether a character is available
-   virtual bool char_available(){ return true; }
-   
-   /// read and return a single character or '\0'
-   ///
-   /// This function reads and returns a single character. 
-   /// When no character is available it waits for one.
-   virtual char getc() = 0;
-	  
+        /// reports whether a character is available
+        virtual bool char_available()
+        {
+            return true;
+        }
 
-   /// read and return a single character or '\0'
-   ///
-   /// This function reads and returns a single character when one is available,
-   /// otherwise it returns '\0'.
-   virtual char getc_nowait(){
-      if( char_available() ){		  
-         return getc();
-	  } else {
-         return '\0';
-      }			
-   }
-        
-   /// input operator for char
-   ///
-   /// This function reads and 'returns' a single character. 
-   /// When no character is available it waits for one.   
-   friend istream & operator>>( istream & stream, char & x ){
-      x = stream.getc();            
-      return stream;   
-   }           
-   
-}; // class istream
+        /// read and return a single character or '\0'
+        ///
+        /// This function reads and returns a single character.
+        /// When no character is available it waits for one.
+        virtual char getc() = 0;
+
+
+        /// read and return a single character or '\0'
+        ///
+        /// This function reads and returns a single character when one is available,
+        /// otherwise it returns '\0'.
+        virtual char getc_nowait()
+        {
+            if (char_available())
+            {
+                return getc();
+            }
+            else
+            {
+                return '\0';
+            }
+        }
+
+        /// input operator for char
+        ///
+        /// This function reads and 'returns' a single character.
+        /// When no character is available it waits for one.
+        friend istream& operator>>(istream& stream, char& x)
+        {
+            x = stream.getc();
+            return stream;
+        }
+
+    }; // class istream
 
 /*
  * class stream_demux : public istream {
@@ -67,5 +77,5 @@ public:
 
 };
 */
-   
+
 }; // namespace hwlib

@@ -15,33 +15,37 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
-	
-class lol_shield : public window {	
-private:
+namespace hwlib
+{
 
-   bool buffer[ 9 ][ 14 ];
-   
-   void write_implementation( 
-      xy pos, 
-      color col
-   ) override {
+    class lol_shield : public window
+    {
+    private:
 
-      buffer[ x ][ y ] = ( col == white );
-   }  
-	   
-public:	
+        bool buffer[9][14];
 
-   lol_shield( ):
-      window( pos( 9, 14 ),
-   {
-   }
-   
-   void poll(){
-   for    	   
-   }
-    
+        void write_implementation(
+                xy pos,
+                color col
+        ) override
+        {
 
-}; // class lol_shield
+            buffer[x][y] = (col == white);
+        }
+
+    public:
+
+        lol_shield() :
+                window(pos(9, 14),
+                        {
+                        }
+
+        void poll()
+        {
+            for
+        }
+
+
+    }; // class lol_shield
 
 }; // namespace hwlib

@@ -15,31 +15,32 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 /// kitt function
 /// 
 /// This function shows a kitt display on the pins of a port.
 /// Each LED is on for m milliseconds. It never returns.
-void kitt( port_in_out & port, uint_fast16_t ms = 100 );
+    void kitt(port_in_out& port, uint_fast16_t ms = 100);
 
 /// @copydoc kitt( port_in_out & port, uint_fast16_t  ms = 100 )
-void kitt( port_out & port, uint_fast16_t ms = 100 );
+    void kitt(port_out& port, uint_fast16_t ms = 100);
 
 /// @copydoc kitt( port_in_out & port, uint_fast16_t  ms = 100 )
-void kitt( port_oc & port, uint_fast16_t ms = 100 );
+    void kitt(port_oc& port, uint_fast16_t ms = 100);
 
 /// snake function
 /// 
 /// This function shows a snake display on the pins of a port.
 /// Each LED is on for m milliseconds. It never returns.
-void snake( port_in_out & port, uint_fast16_t ms = 100 );
+    void snake(port_in_out& port, uint_fast16_t ms = 100);
 
 /// @copydoc kitt( port_in_out & port, uint_fast16_t  ms = 100 )
-void snake( port_out & port, uint_fast16_t ms = 100 );
+    void snake(port_out& port, uint_fast16_t ms = 100);
 
 /// @copydoc kitt( port_in_out & port, uint_fast16_t  ms = 100 )
-void snake( port_oc & port, uint_fast16_t ms = 100 );
+    void snake(port_oc& port, uint_fast16_t ms = 100);
 
 
 // ===========================================================================
@@ -48,51 +49,62 @@ void snake( port_oc & port, uint_fast16_t ms = 100 );
 //
 // ===========================================================================
 
-#ifdef _HWLIB_ONCE 
+#ifdef _HWLIB_ONCE
 
-void HWLIB_NORETURN kitt( port_out & port, uint_fast16_t ms ){
-   auto direct_port = direct( port );
-   for(;;){
-      for( uint_fast8_t  i = 0; i < direct_port.number_of_pins(); ++i ){
-         direct_port.write( 0x01 << i );       
-         wait_ms( ms );
-      }
-      for( uint_fast8_t  i = direct_port.number_of_pins() - 2; i > 0; --i ){
-         direct_port.write( 0x01 << i );      	 
-         wait_ms( ms );
-      }
-   }      
-}
+    void HWLIB_NORETURN kitt(port_out& port, uint_fast16_t ms)
+    {
+        auto direct_port = direct(port);
+        for (;;)
+        {
+            for (uint_fast8_t i = 0; i < direct_port.number_of_pins(); ++i)
+            {
+                direct_port.write(0x01 << i);
+                wait_ms(ms);
+            }
+            for (uint_fast8_t i = direct_port.number_of_pins() - 2; i > 0; --i)
+            {
+                direct_port.write(0x01 << i);
+                wait_ms(ms);
+            }
+        }
+    }
 
-void HWLIB_NORETURN kitt( port_in_out & port, uint_fast16_t ms ){
-   auto out_port = port_out_from( port );
-   kitt( out_port, ms );
-}
+    void HWLIB_NORETURN kitt(port_in_out& port, uint_fast16_t ms)
+    {
+        auto out_port = port_out_from(port);
+        kitt(out_port, ms);
+    }
 
-void HWLIB_NORETURN kitt( port_oc & port, uint_fast16_t ms ){
-   auto out_port = port_out_from( port );
-   kitt( out_port, ms );    
-}
+    void HWLIB_NORETURN kitt(port_oc& port, uint_fast16_t ms)
+    {
+        auto out_port = port_out_from(port);
+        kitt(out_port, ms);
+    }
 
-void HWLIB_NORETURN snake( port_out & port, uint_fast16_t ms ){
-   auto direct_port = direct( port );
-   for(;;){
-      for( uint_fast8_t  i = 0; i < direct_port.number_of_pins(); ++i ){
-         direct_port.write( 0x01 << i );      		 
-         wait_ms( ms );
-      }
-   }      
-}
+    void HWLIB_NORETURN snake(port_out& port, uint_fast16_t ms)
+    {
+        auto direct_port = direct(port);
+        for (;;)
+        {
+            for (uint_fast8_t i = 0; i < direct_port.number_of_pins(); ++i)
+            {
+                direct_port.write(0x01 << i);
+                wait_ms(ms);
+            }
+        }
+    }
 
-void HWLIB_NORETURN snake( port_in_out & port, uint_fast16_t ms ){
-   auto out_port = port_out_from( port );
-   snake( out_port, ms );
-}
+    void HWLIB_NORETURN snake(port_in_out& port, uint_fast16_t ms)
+    {
+        auto out_port = port_out_from(port);
+        snake(out_port, ms);
+    }
 
-void HWLIB_NORETURN snake( port_oc & port, uint_fast16_t ms ){
-   auto out_port = port_out_from( port );
-   snake( out_port, ms );    
-}
+    void HWLIB_NORETURN snake(port_oc& port, uint_fast16_t ms)
+    {
+        auto out_port = port_out_from(port);
+        snake(out_port, ms);
+    }
 
 #endif // #ifdef HWLIB_ONCE
 
@@ -103,55 +115,67 @@ void HWLIB_NORETURN snake( port_oc & port, uint_fast16_t ms ){
 //
 // ===========================================================================
 
-class kitt_background : public periodic {
-private:
-   port_out & port;
-   int_fast8_t position = -1;
-   int_fast8_t direction = 1;
-   
-   void work() override {
-      position += direction;
-      if( direction > 0 ){
-         if( position + 1 == (int_fast8_t)port.number_of_pins() ){
-            direction = -1; 
-         }
-      } else {
-         if( position == 0 ){
-            direction = +1; 
-         }
-      }
-      port.write( 0b01 << position );
-      port.flush();
-   }
-   
-public:   
-   kitt_background( port_out & port, uint_fast16_t ms = 100 ):
-      periodic( ms * 1000 ), port( port )
-   {}
-     
-};
+    class kitt_background : public periodic
+    {
+    private:
+        port_out& port;
+        int_fast8_t position = -1;
+        int_fast8_t direction = 1;
+
+        void work() override
+        {
+            position += direction;
+            if (direction > 0)
+            {
+                if (position + 1 == (int_fast8_t)port.number_of_pins())
+                {
+                    direction = -1;
+                }
+            }
+            else
+            {
+                if (position == 0)
+                {
+                    direction = +1;
+                }
+            }
+            port.write(0b01 << position);
+            port.flush();
+        }
+
+    public:
+        kitt_background(port_out& port, uint_fast16_t ms = 100) :
+                periodic(ms * 1000), port(port)
+        {
+        }
+
+    };
 
 
-class walk_background : public periodic {
-private:
-   port_out & port;
-   int_fast8_t position = -1;
-   
-   void work() override {
-      position++;
-      if( position == (int_fast8_t)port.number_of_pins() ){
-         position = 0;
-      }
-      port.write( 0b01 << position );
-      port.flush();
-   }
-   
-public:   
-   walk_background( port_out & port, uint_fast16_t ms = 100 ):
-      periodic( ms * 1000 ), port( port )
-   {}
-     
-};
+    class walk_background : public periodic
+    {
+    private:
+        port_out& port;
+        int_fast8_t position = -1;
+
+        void work() override
+        {
+            position++;
+            if (position == (int_fast8_t)port.number_of_pins())
+            {
+                position = 0;
+            }
+            port.write(0b01 << position);
+            port.flush();
+        }
+
+    public:
+        walk_background(port_out& port, uint_fast16_t ms = 100) :
+                periodic(ms * 1000), port(port)
+        {
+        }
+
+    };
 
 
 }; // namespace hwlib

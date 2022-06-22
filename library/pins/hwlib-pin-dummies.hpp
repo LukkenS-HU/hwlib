@@ -15,59 +15,108 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
-    
-	
+namespace hwlib
+{
+
+
 /// a dummy (do-nothing) pin_in_out class
-class pin_in_out_dummy_t : public pin_in_out {
-public:
-   void write( bool v ) override {}
-   bool read() override { return 0; }
-   void direction_set_input() override {}
-   void direction_set_output() override {}
-   void flush() override {}
-   void refresh() override {}
-   void direction_flush() override {}
-};  
+    class pin_in_out_dummy_t : public pin_in_out
+    {
+    public:
+        void write(bool v) override
+        {
+        }
+
+        bool read() override
+        {
+            return 0;
+        }
+
+        void direction_set_input() override
+        {
+        }
+
+        void direction_set_output() override
+        {
+        }
+
+        void flush() override
+        {
+        }
+
+        void refresh() override
+        {
+        }
+
+        void direction_flush() override
+        {
+        }
+    };
 
 
 /// a dummy (do-nothing) pin_in class
-class pin_in_dummy_t : public pin_in {
-public:
-   bool read() override { return 0; }
-   void refresh() override {}
-};   
+    class pin_in_dummy_t : public pin_in
+    {
+    public:
+        bool read() override
+        {
+            return 0;
+        }
+
+        void refresh() override
+        {
+        }
+    };
 
 
 /// a dummy (do-nothing) pin_out class
-class pin_out_dummy_t : public pin_out {
-public:
-   void write( bool v ) override {}
-   void flush() override {}
-};   
+    class pin_out_dummy_t : public pin_out
+    {
+    public:
+        void write(bool v) override
+        {
+        }
+
+        void flush() override
+        {
+        }
+    };
 
 
 /// a dummy (do-nothing) pin_oc class
-class pin_oc_dummy_t : public pin_oc {
-public:
-   void write( bool v ) override {}
-   bool read() override { return 0; }
-   void flush() override {}
-   void refresh() override {}   
-};   
+    class pin_oc_dummy_t : public pin_oc
+    {
+    public:
+        void write(bool v) override
+        {
+        }
+
+        bool read() override
+        {
+            return 0;
+        }
+
+        void flush() override
+        {
+        }
+
+        void refresh() override
+        {
+        }
+    };
 
 
 /// a dummy (do-nothing) pin_in_out object
-extern pin_in_out_dummy_t  pin_in_out_dummy;
+    extern pin_in_out_dummy_t pin_in_out_dummy;
 
 /// a dummy (do-nothing) pin_in object
-extern pin_in_dummy_t      pin_in_dummy;
+    extern pin_in_dummy_t pin_in_dummy;
 
 /// a dummy (do-nothing) pin_out object
-extern pin_out_dummy_t     pin_out_dummy;
+    extern pin_out_dummy_t pin_out_dummy;
 
 /// a dummy (do-nothing) pin_oc object
-extern pin_oc_dummy_t      pin_oc_dummy;
+    extern pin_oc_dummy_t pin_oc_dummy;
 
 
 // ===========================================================================
@@ -78,10 +127,10 @@ extern pin_oc_dummy_t      pin_oc_dummy;
 
 #ifdef _HWLIB_ONCE
 
-pin_in_out_dummy_t  pin_in_out_dummy;
-pin_in_dummy_t      pin_in_dummy;
-pin_out_dummy_t     pin_out_dummy;
-pin_oc_dummy_t      pin_oc_dummy;
+    pin_in_out_dummy_t pin_in_out_dummy;
+    pin_in_dummy_t pin_in_dummy;
+    pin_out_dummy_t pin_out_dummy;
+    pin_oc_dummy_t pin_oc_dummy;
 
 #endif // _HWLIB_ONCE
 

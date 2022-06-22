@@ -60,14 +60,18 @@ namespace mimxrt1062
         uint32_t ad_channel;
 
         // constructor
-        constexpr core_pin(uint32_t GPIO_port_base_adress, uint8_t GPIO_port_bit_number, uint32_t IOMUXC_MUX_control_register_array_index, uint32_t IOMUXC_PAD_control_register_array_index, uint32_t serial_base_adress = 0XFFFFFFFF, uint32_t ad_channel = 0XFFFFFFFF): 
-        GPIO_port_base_adress(GPIO_port_base_adress), GPIO_port_bit_number(GPIO_port_bit_number), 
-        IOMUXC_MUX_control_register_array_index(IOMUXC_MUX_control_register_array_index),  
-        IOMUXC_PAD_control_register_array_index(IOMUXC_PAD_control_register_array_index),
-        serial_base_adress(serial_base_adress),
-        ad_channel(ad_channel)
-        {};
+        constexpr core_pin(uint32_t GPIO_port_base_adress, uint8_t GPIO_port_bit_number,
+                uint32_t IOMUXC_MUX_control_register_array_index, uint32_t IOMUXC_PAD_control_register_array_index,
+                uint32_t serial_base_adress = 0XFFFFFFFF, uint32_t ad_channel = 0XFFFFFFFF) :
+                GPIO_port_base_adress(GPIO_port_base_adress), GPIO_port_bit_number(GPIO_port_bit_number),
+                IOMUXC_MUX_control_register_array_index(IOMUXC_MUX_control_register_array_index),
+                IOMUXC_PAD_control_register_array_index(IOMUXC_PAD_control_register_array_index),
+                serial_base_adress(serial_base_adress),
+                ad_channel(ad_channel)
+        {
+        };
     };
+
     /**
      * @brief Struct containing the core pin structs that map a chip pad to the configuration register adresses and IO ports
      * @details all this info is gotten from the consumer reference manual in combination with the Arduino IDE library. This may be a bit vague 
@@ -75,48 +79,48 @@ namespace mimxrt1062
      * 
      */
     constexpr core_pin core_pin_struct_array[40] =
-    {
-        {GPIO6_BASE,3,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_03,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_03,LPUART6_BASE},
-        {GPIO6_BASE,2,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_02,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_02,LPUART6_BASE},
-        {GPIO9_BASE,4,kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_04,kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_04},
-        {GPIO9_BASE,5,kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_05,kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_05},
-        {GPIO9_BASE,6,kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_06,kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_06},
-        {GPIO9_BASE,8,kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_08,kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_08},
-        {GPIO7_BASE,10,kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_10,kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_10},
-        {GPIO7_BASE,17,kIOMUXC_SW_MUX_CTL_PAD_GPIO_B1_01,kIOMUXC_SW_PAD_CTL_PAD_GPIO_B1_01,LPUART4_BASE},
-        {GPIO7_BASE,16,kIOMUXC_SW_MUX_CTL_PAD_GPIO_B1_00,kIOMUXC_SW_PAD_CTL_PAD_GPIO_B1_00,LPUART4_BASE},
-        {GPIO7_BASE,11,kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_11,kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_11},
-        {GPIO7_BASE,0,kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_00,kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_00},
-        {GPIO7_BASE,2,kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_02,kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_02},
-        {GPIO7_BASE,1,kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_01,kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_01},
-        {GPIO7_BASE,3,kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_03,kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_03},
-        {GPIO6_BASE,18,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_02,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_02,LPUART2_BASE,7}, 
-        {GPIO6_BASE,19,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_03,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_03,LPUART2_BASE,8},
-        {GPIO6_BASE,23,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_07,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_07,LPUART3_BASE,12},
-        {GPIO6_BASE,22,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_06,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_06,LPUART3_BASE,11},
-        {GPIO6_BASE,17,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_01,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_01,0,6},
-        {GPIO6_BASE,16,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_00,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_00,0,5},
-        {GPIO6_BASE,26,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_10,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_10,LPUART8_BASE,15},
-        {GPIO6_BASE,27,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_11,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_11,LPUART8_BASE,0},
-        {GPIO6_BASE,24,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_08,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_08,0,13},
-        {GPIO6_BASE,25,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_09,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_09,0,14},
-        {GPIO6_BASE,12,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_12,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_12,LPUART1_BASE},
-        {GPIO6_BASE,13,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_13,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_13,LPUART1_BASE},
-        {GPIO6_BASE,30,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_14,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_14},
-        {GPIO6_BASE,31,kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_15,kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_15},
-        {GPIO8_BASE,18,kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_32,kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_32,LPUART7_BASE},
-        {GPIO9_BASE,31,kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_31,kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_31,LPUART7_BASE},
-        {GPIO8_BASE,23,kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_37,kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_37},
-        {GPIO8_BASE,22,kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_36,kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_36},
-        {GPIO7_BASE,12,kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_12,kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_12},
-        {GPIO9_BASE,7,kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_07,kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_07},
-        {GPIO8_BASE,15,kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_03,kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_03},
-        {GPIO8_BASE,14,kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_02,kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_02},
-        {GPIO8_BASE,13,kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_01,kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_01},
-        {GPIO8_BASE,12,kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_00,kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_00},
-        {GPIO8_BASE,17,kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_05,kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_05},
-        {GPIO8_BASE,16,kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_04,kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_04}
-    };
+            {
+                    { GPIO6_BASE, 3,  kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_03, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_03, LPUART6_BASE },
+                    { GPIO6_BASE, 2,  kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_02, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_02, LPUART6_BASE },
+                    { GPIO9_BASE, 4,  kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_04,   kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_04 },
+                    { GPIO9_BASE, 5,  kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_05,   kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_05 },
+                    { GPIO9_BASE, 6,  kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_06,   kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_06 },
+                    { GPIO9_BASE, 8,  kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_08,   kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_08 },
+                    { GPIO7_BASE, 10, kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_10,    kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_10 },
+                    { GPIO7_BASE, 17, kIOMUXC_SW_MUX_CTL_PAD_GPIO_B1_01,    kIOMUXC_SW_PAD_CTL_PAD_GPIO_B1_01,    LPUART4_BASE },
+                    { GPIO7_BASE, 16, kIOMUXC_SW_MUX_CTL_PAD_GPIO_B1_00,    kIOMUXC_SW_PAD_CTL_PAD_GPIO_B1_00,    LPUART4_BASE },
+                    { GPIO7_BASE, 11, kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_11,    kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_11 },
+                    { GPIO7_BASE, 0,  kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_00,    kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_00 },
+                    { GPIO7_BASE, 2,  kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_02,    kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_02 },
+                    { GPIO7_BASE, 1,  kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_01,    kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_01 },
+                    { GPIO7_BASE, 3,  kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_03,    kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_03 },
+                    { GPIO6_BASE, 18, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_02, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_02, LPUART2_BASE, 7 },
+                    { GPIO6_BASE, 19, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_03, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_03, LPUART2_BASE, 8 },
+                    { GPIO6_BASE, 23, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_07, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_07, LPUART3_BASE, 12 },
+                    { GPIO6_BASE, 22, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_06, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_06, LPUART3_BASE, 11 },
+                    { GPIO6_BASE, 17, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_01, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_01, 0,            6 },
+                    { GPIO6_BASE, 16, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_00, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_00, 0,            5 },
+                    { GPIO6_BASE, 26, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_10, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_10, LPUART8_BASE, 15 },
+                    { GPIO6_BASE, 27, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_11, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_11, LPUART8_BASE, 0 },
+                    { GPIO6_BASE, 24, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_08, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_08, 0,            13 },
+                    { GPIO6_BASE, 25, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_09, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_09, 0,            14 },
+                    { GPIO6_BASE, 12, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_12, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_12, LPUART1_BASE },
+                    { GPIO6_BASE, 13, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B0_13, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B0_13, LPUART1_BASE },
+                    { GPIO6_BASE, 30, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_14, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_14 },
+                    { GPIO6_BASE, 31, kIOMUXC_SW_MUX_CTL_PAD_GPIO_AD_B1_15, kIOMUXC_SW_PAD_CTL_PAD_GPIO_AD_B1_15 },
+                    { GPIO8_BASE, 18, kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_32,   kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_32,   LPUART7_BASE },
+                    { GPIO9_BASE, 31, kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_31,   kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_31,   LPUART7_BASE },
+                    { GPIO8_BASE, 23, kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_37,   kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_37 },
+                    { GPIO8_BASE, 22, kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_36,   kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_36 },
+                    { GPIO7_BASE, 12, kIOMUXC_SW_MUX_CTL_PAD_GPIO_B0_12,    kIOMUXC_SW_PAD_CTL_PAD_GPIO_B0_12 },
+                    { GPIO9_BASE, 7,  kIOMUXC_SW_MUX_CTL_PAD_GPIO_EMC_07,   kIOMUXC_SW_PAD_CTL_PAD_GPIO_EMC_07 },
+                    { GPIO8_BASE, 15, kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_03, kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_03 },
+                    { GPIO8_BASE, 14, kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_02, kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_02 },
+                    { GPIO8_BASE, 13, kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_01, kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_01 },
+                    { GPIO8_BASE, 12, kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_00, kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_00 },
+                    { GPIO8_BASE, 17, kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_05, kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_05 },
+                    { GPIO8_BASE, 16, kIOMUXC_SW_MUX_CTL_PAD_GPIO_SD_B0_04, kIOMUXC_SW_PAD_CTL_PAD_GPIO_SD_B0_04 }
+            };
 
 
     /**
@@ -128,7 +132,7 @@ namespace mimxrt1062
      */
     inline void writeIOMUXMUXCTL(int n, uint32_t mask)
     {
-        IOMUXC->SW_MUX_CTL_PAD[n] &= ~(0b111); 
+        IOMUXC->SW_MUX_CTL_PAD[n] &= ~(0b111);
         IOMUXC->SW_MUX_CTL_PAD[n] |= mask;
     }
 
@@ -147,12 +151,16 @@ namespace mimxrt1062
     }
 
     /// the number of ticks per us
-    int_fast64_t HWLIB_WEAK ticks_per_us()
+    int_fast64_t HWLIB_WEAK
+
+    ticks_per_us()
     {
         return 600; // this number should be the same as the cpu freq in Mhz, do not touch if you do not know what you are doing
     }
 
-    uint_fast64_t HWLIB_WEAK now_ticks()
+    uint_fast64_t HWLIB_WEAK
+
+    now_ticks()
     {
         static bool init_done = false;
         if (!init_done)

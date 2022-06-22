@@ -15,7 +15,8 @@
 // this file contains Doxygen lines
 /// @file
 
-namespace hwlib {
+namespace hwlib
+{
 
 
 /// panic function for irrecoverable runtime errors
@@ -32,10 +33,10 @@ namespace hwlib {
 /// panic function:
 /// \snippet "db103\panic\main.cpp" [Doxygen panic example]
 ///
-void HWLIB_NORETURN panic( 
-   const char * file, 
-   const uint_fast16_t line 
-);
+    void HWLIB_NORETURN panic(
+            const char* file,
+            const uint_fast16_t line
+    );
 
 
 /// panic-with-location macro 
@@ -50,16 +51,17 @@ void HWLIB_NORETURN panic(
 //
 // ===========================================================================
 
-#ifdef _HWLIB_ONCE 
+#ifdef _HWLIB_ONCE
 
 // The weak attribute allows an application 
 // to specify its own panic function
-void HWLIB_NORETURN HWLIB_WEAK panic( 
-   const char * file, 
-   const uint_fast16_t line 
-){
-   for(;;);
-}
+    void HWLIB_NORETURN HWLIB_WEAK panic(
+            const char* file,
+            const uint_fast16_t line
+    )
+    {
+        for (;;);
+    }
 
 #endif // #ifdef _HWLIB_ONCE
 
