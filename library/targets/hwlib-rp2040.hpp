@@ -19,6 +19,7 @@
 #include <hardware/gpio.h>
 #include <hardware/i2c.h>
 #include <hardware/uart.h>
+#include <time.h>
 
 namespace hwlib
 {
@@ -207,6 +208,16 @@ namespace hwlib
     void wait_us(int_fast32_t n)
     {
         sleep_us(n);
+    }
+
+    uint_fast64_t now_ticks()
+    {
+        return time_us_64();
+    }
+
+    uint_fast64_t ticks_per_us()
+    {
+        return 1;
     }
 
 #endif
