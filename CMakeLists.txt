@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.17)
 
-option(BUILD_FOR_NATIVE "Whether to build for a native target or not." ON)
+option(BUILD_FOR_NATIVE "Whether to build for a native target or not." OFF)
 option(USE_PICO_SDK "Whether to use the RPi Pico SDK or not (disabling this essentially disables Pico support.)" ON)
-option(EXTERNAL_PICO_SDK "Whether or not to expect an external pico sdk to be present." ON)
+option(EXTERNAL_PICO_SDK "Whether or not to expect an external pico sdk to be present." OFF)
 
 if (BUILD_FOR_NATIVE)
     message("Building for a native target!")

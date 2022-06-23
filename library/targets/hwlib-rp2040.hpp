@@ -189,6 +189,50 @@ namespace hwlib
             {
             }
         };
+
+        class hardware_i2c : public i2c_bus,
+                                    i2c_primitives
+        {
+        public:
+            explicit hardware_i2c(i2c_inst_t *i2cInstance, pins scl, pins sda)
+            : i2c_bus((i2c_primitives&)*this), _i2cInstance(i2cInstance)
+            {
+                gpio_set_function(scl, GPIO_FUNC_I2C);
+                gpio_set_function(sda, GPIO_FUNC_I2C);
+
+                i2c_init(i2cInstance, 400'000);
+            }
+
+        protected:
+            void begin(uint8_t address, bool read) override
+            {
+                _address = address;
+            }
+
+            void end_write(bool stop) override
+            {
+
+            }
+
+            void end_read() override
+            {
+
+            }
+
+            void write(const uint8_t* data, size_t n) override
+            {
+                i2c_write_blocking(_i2cInstance, _address, data, n, false);
+            }
+
+            void read(bool first_read, uint8_t* data, size_t n) override
+            {
+                i2c_read_blocking(_i2cInstance, _address, data, n, false);
+            }
+
+        private:
+            uint8_t _address = 0;
+            i2c_inst_t *_i2cInstance;
+        };
     }
 
     namespace target = hwlib::RP2040;

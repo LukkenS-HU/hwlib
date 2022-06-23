@@ -407,7 +407,7 @@ namespace hwlib
                 window(wsize, white, black)
         {
             command(ssd1306_commands::display_off);
-            command(ssd1306_commands::set_display_clock_div, 0x80);
+            command(ssd1306_commands::set_display_clock_div, 0x10);
             command(ssd1306_commands::set_multiplex, 0x3f);
             command(ssd1306_commands::set_display_offset, 0x00);
             command((ssd1306_commands)(((int)ssd1306_commands::set_start_line) | 0x00));
@@ -461,12 +461,9 @@ namespace hwlib
 
         static auto constexpr wsize = xy(128, 64);
 
-        uint8_t buffer[wsize.x * wsize.y / 8];
+        uint8_t buffer[wsize.x * wsize.y / 8]{};
 
-        void write_implementation(
-                xy pos,
-                color col
-        ) override
+        void write_implementation(xy pos, color col) override
         {
             int a = pos.x + (pos.y / 8) * size.x;
 
@@ -483,7 +480,7 @@ namespace hwlib
     public:
 
         /// construct by providing the i2c channel
-        glcd_oled_i2c_128x64_buffered(i2c_bus& bus, int address = 0x3C) :
+        explicit glcd_oled_i2c_128x64_buffered(i2c_bus& bus, int address = 0x3C) :
                 ssd1306_i2c(bus, address),
                 window(wsize, white, black)
         {
@@ -491,37 +488,31 @@ namespace hwlib
                     ssd1306_initialization,
                     sizeof(ssd1306_initialization) / sizeof(uint8_t)
             );
-            clear();
+            glcd_oled_i2c_128x64_buffered::clear();
         }
 
         void flush() override
         {
             command(ssd1306_commands::column_addr, 0, 127);
             command(ssd1306_commands::page_addr, 0, 7);
-            if (0)
-                for (int y = 0; y < 64 / 8; y++)
+            for (int y = 0; y < 64 / 8; y++)
+            {
+                for (int x = 0; x < 128; x++)
                 {
-                    for (int x = 0; x < 128; x++)
-                    {
-                        uint8_t d = buffer[x + 128 * y];
-                        uint8_t data[] = { 0x40, d };
-                        bus.write(address).write(
-                                data,
-                                sizeof(data) / sizeof(uint8_t)
-                        );
-                    }
-
-                    // yield the CPU when this is run with an I2C implementation
-                    // that doesn't ever wait, to
-                    //    - prevent polling timing from missing an overflow
-                    //    - keep other threads in a in a multi-threading context alive
-                    wait_us(0);
+                    uint8_t d = buffer[x + 128 * y];
+                    uint8_t data[] = { 0x40, d };
+                    bus.write(address).write(
+                            data,
+                            sizeof(data) / sizeof(uint8_t)
+                    );
                 }
-            //for( int y = 0; y < 64 / 8; y++ ){
-            auto t = bus.write(address);
-            t.write(ssd1306_data_prefix);
-            t.write(buffer, sizeof(buffer) / sizeof(uint8_t));
-            //}
+
+                // yield the CPU when this is run with an I2C implementation
+                // that doesn't ever wait, to
+                //    - prevent polling timing from missing an overflow
+                //    - keep other threads in a in a multi-threading context alive
+                wait_us(0);
+            }
         }
 
     }; // class glcd_oled_i2c_128x64_buffered

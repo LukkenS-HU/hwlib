@@ -50,49 +50,17 @@ namespace hwlib
 /// clock-stretching by a slave.
 class i2c_primitives {
 public:
-	
-   /// output a single bit	
-   virtual void write_bit( bool x ) = 0;
+   virtual void begin(uint8_t address, bool read) = 0;
 
-   /// input (read) a single bit
-   virtual bool read_bit() = 0;
-  
-   /// output a start bit
-   virtual void write_start() = 0;
-
-   /// output a stop bit
-   virtual void write_stop() = 0;
-    
-   /// input (read) and return an ack
-   ///
-   /// The default implementation inputs a bit and returns its inverse.
-   virtual bool read_ack(){
-      bool ack = ! read_bit(); 
-      return ack;
-   } 
-
-   /// output an ack bit
-   ///
-   /// The default implementation outputs a 0 bit.
-   virtual void write_ack(){
-      write_bit( 0 );
-   }
-
-   /// output a nack bit 
-   ///
-   /// The default implementation outputs a 1 bit.
-   virtual void write_nack(){
-      write_bit( 1 );
-   }
+   virtual void end_write(bool stop) = 0;
+   virtual void end_read() = 0;
 
    /// output (write) a single byte
    ///
    /// The default implementation outputs the 8 bits.
-   virtual void write( uint8_t x ){
-      for( uint_fast8_t i = 0; i < 8; i++ ){
-         write_bit( ( x & 0x80 ) != 0 );
-         x = x << 1;
-      }         
+   virtual void write( uint8_t x )
+   {
+       write(&x, sizeof(x));
    }
    
    /// output (write) multiple bytes
@@ -100,48 +68,25 @@ public:
    /// The default implementation calls, for each byte 
    ///    - read_ack
    ///    - write to output each byte.
-   virtual void write( 
-      const uint8_t data[], 
-      size_t n  
-   ){
-      for( size_t i = 0; i < n; i++ ){
-         (void) read_ack();
-         write( data[ i ] );
-      }   
-   }      
+   virtual void write(const uint8_t data[], size_t n) = 0;
 
    /// input (read) a byte
    ///
    /// The default implementation inputs 8 bits and
    /// returns them as a byte.
-   virtual uint_fast8_t read_byte(){
-      uint_fast8_t result = 0;
-      for( uint_fast8_t i = 0; i < 8; i++ ){
-         result = result << 1;
-         if( read_bit() ){
-            result |= 0x01;
-         } 
-      }   
-      return result;     
-   }        
+   virtual uint_fast8_t read_byte()
+   {
+       uint8_t result;
+       read(false, &result, sizeof(result));
+       return result;
+   }
    
    /// input (read) multiple bytes
    ///
    /// The default implementation calls, for each byte 
    ///    - read_ack for each byte *except* the first when first_byte == true
    ///    - write to output each byte.   
-   virtual void read( 
-      bool first_read,
-      uint8_t data[], 
-      size_t n  
-   ){
-      for( uint_fast8_t i = 0; i < n; i++ ){
-         if( ( ! first_read ) || ( i > 0 )){
-            write_ack();
-         }   
-         data[ i ] = read_byte();
-      }    
-   }      
+   virtual void read(bool first_read, uint8_t data[], size_t n) = 0;
 };
    
 
@@ -174,8 +119,7 @@ public:
        primitives( primitives ),
        end_with_stop( true )
    {
-      primitives.write_start();
-      primitives.write( a << 1 );		  
+       primitives.begin(a, false);
    }
    
    /// prepare for a repeated start
@@ -211,13 +155,9 @@ public:
    }		  
    
    /// terminate (close) the write transaction
-   ~i2c_write_transaction(){
-      primitives.read_ack();
-      if( end_with_stop ){
-         primitives.write_stop();		  
-      } else {
-         primitives.write_bit( 1 );
-      }
+   ~i2c_write_transaction()
+   {
+       primitives.end_write(end_with_stop);
    }
 	  
 }; // class i2c_write_transaction  
@@ -251,9 +191,7 @@ public:
        primitives( primitives ),
        first_read( true )
    {
-      primitives.write_start();
-      primitives.write( ( a << 1 ) | 0x01 );		
-      primitives.read_ack();		 
+       primitives.begin(a, false);
    }   
 
    /// read a single bytes
@@ -292,9 +230,9 @@ public:
    }
    
    /// terminate (close) the read transaction
-   ~i2c_read_transaction(){
-      primitives.write_nack();
-      primitives.write_stop();         		  
+   ~i2c_read_transaction()
+   {
+       primitives.end_read();
    }
      
 }; // class i2c_read_transaction 
@@ -315,8 +253,8 @@ public:
    /// low-level i2c bus operations
    i2c_primitives & primitives;
 
-   i2c_bus( i2c_primitives & primitives ):
-       primitives( primitives )
+   explicit i2c_bus( i2c_primitives & primitives )
+   : primitives( primitives )
    {}   
    
    /// returns a write transaction	   
@@ -355,19 +293,19 @@ public:
 
         pin_oc& scl, & sda;
 
-        void wait_half_period()
+        static void wait_half_period()
         {
             wait_us(1);
         }
 
-        void write_bit(bool x) override
+        void write_bit(bool x)
         {
-            scl.write(0);
+            scl.write(false);
             scl.flush();
             wait_half_period();
             sda.write(x);
             sda.flush();
-            scl.write(1);
+            scl.write(true);
             scl.flush();
 
             do
@@ -376,14 +314,14 @@ public:
             } while (!scl.read());
         }
 
-        bool read_bit() override
+        bool read_bit()
         {
-            scl.write(0);
+            scl.write(false);
             scl.flush();
-            sda.write(1);
+            sda.write(true);
             sda.flush();
             wait_half_period();
-            scl.write(1);
+            scl.write(true);
             scl.flush();
 
             do
@@ -397,30 +335,109 @@ public:
             return result;
         }
 
-        void write_start() override
+        void write_start()
         {
-            sda.write(0);
+            sda.write(false);
             sda.flush();
             wait_half_period();
-            scl.write(0);
+            scl.write(false);
             scl.flush();
             wait_half_period();
         }
 
-        void write_stop() override
+        void write_stop()
         {
-            scl.write(0);
+            scl.write(false);
             scl.flush();
             wait_half_period();
-            sda.write(0);
+            sda.write(false);
             sda.flush();
             wait_half_period();
-            scl.write(1);
+            scl.write(true);
             scl.flush();
             wait_half_period();
-            sda.write(1);
+            sda.write(true);
             sda.flush();
             wait_half_period();
+        }
+
+        uint_fast8_t read_byte() override
+        {
+            uint_fast8_t result = 0;
+            for( uint_fast8_t i = 0; i < 8; i++ ){
+                result = result << 1;
+                if( read_bit() )
+                {
+                    result |= 0x01;
+                }
+            }
+            return result;
+        }
+
+        bool read_ack()
+        {
+            bool ack = !read_bit();
+            return ack;
+        }
+
+        void write_ack()
+        {
+            write_bit( false );
+        }
+
+        void write_nack()
+        {
+            write_bit( true );
+        }
+
+        void write(uint8_t x) override
+        {
+            for( uint_fast8_t i = 0; i < 8; i++ )
+            {
+                write_bit( ( x & 0x80 ) != 0 );
+                x = x << 1;
+            }
+        }
+
+        void write(const uint8_t data[], size_t n) override
+        {
+            for( size_t i = 0; i < n; i++ ){
+                (void) read_ack();
+                write( data[ i ] );
+            }
+        }
+
+        void read(bool first_read, uint8_t data[], size_t n) override
+        {
+            for( uint_fast8_t i = 0; i < n; i++ ){
+                if( ( ! first_read ) || ( i > 0 )){
+                    write_ack();
+                }
+                data[ i ] = read_byte();
+            }
+        }
+
+        void begin(uint8_t address, bool read) override
+        {
+            write_start();
+            write((address << 1) | read);
+            if (read)
+                read_ack();
+        }
+
+        void end_write(bool stop) override
+        {
+            read_ack();
+            if (stop)
+                write_stop();
+            else
+                write_bit(true);
+        }
+
+        void end_read() override
+        {
+            write_nack();
+            write_stop();
         }
 
     public:
