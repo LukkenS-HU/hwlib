@@ -254,6 +254,11 @@ namespace hwlib
         sleep_us(n);
     }
 
+    uint_fast64_t now_us()
+    {
+        return time_us_64();
+    }
+
     uint_fast64_t now_ticks()
     {
         return time_us_64();
