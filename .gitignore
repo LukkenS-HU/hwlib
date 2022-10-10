@@ -24,7 +24,9 @@ _dummy.jpg
 bmptk_*_stack.c
 _doxygen.bat
 html
+
 /test/native/12-10-*/
 /test/native/4-*/
 /test/native/5-*/
 /test/native/6-*/
+/test/native/practicum*

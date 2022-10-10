@@ -58,8 +58,9 @@ namespace hwlib
 /// a line object                 
     class line : public drawable
     {
-    private:
+    public:
         xy end;
+    private:
         color ink;
 
         static void swap(int_fast16_t& a, int_fast16_t& b)

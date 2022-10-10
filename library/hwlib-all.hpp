@@ -52,6 +52,7 @@
 #include HWLIB_INCLUDE( pins/hwlib-pin-all.hpp )
 #include HWLIB_INCLUDE( pins/hwlib-pin-direct.hpp )
 #include HWLIB_INCLUDE( pins/hwlib-pin-demos.hpp )
+#include HWLIB_INCLUDE( pins/hwlib-pin-debounced.hpp )
 
 #include HWLIB_INCLUDE( ports/hwlib-port.hpp )
 #include HWLIB_INCLUDE( ports/hwlib-port-from-port.hpp )

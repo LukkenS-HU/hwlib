@@ -239,8 +239,24 @@ namespace hwlib
 
 #ifdef _HWLIB_ONCE
 
+    static void initialize_uart()
+    {
+        static bool UartInitialized = false;
+        if (UartInitialized)
+            return;
+
+        uart_init(uart0, 115200);
+
+        gpio_set_function(PICO_DEFAULT_UART_TX_PIN, GPIO_FUNC_UART);
+        gpio_set_function(PICO_DEFAULT_UART_RX_PIN, GPIO_FUNC_UART);
+
+        UartInitialized = true;
+    }
+
     void uart_putc(char c)
     {
+        initialize_uart();
+
         uart_putc(uart0, c);
     }
 
